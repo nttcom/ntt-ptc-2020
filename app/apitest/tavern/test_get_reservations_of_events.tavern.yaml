@@ -1,0 +1,433 @@
+---
+test_name: Get reservations of specific events Testcase
+
+includes:
+  - !include auth_stage.yaml
+
+stages:
+  - type: ref
+    id: login_get_token_of_artist
+  # TODO: デフォルトの挙動が ?limit=10&offset=0 になっていることのテスト
+  - name: Success to get reservations of specific events when artist requests own events
+    request:
+      url: "{tavern.env_vars.url}/events/3/reservations"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+      json:
+        - id: 242
+          user_id: 6841
+          username: 上間隼人
+          event_id: 3
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 5
+          created_at: "2020-12-10T15:21:57Z"
+          updated_at: "2020-12-10T15:21:57Z"
+        - id: 243
+          user_id: 4918
+          username: 五味ジュリア
+          event_id: 3
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 3
+          created_at: "2021-01-22T22:12:24Z"
+          updated_at: "2021-01-22T22:12:24Z"
+        - id: 244
+          user_id: 3139
+          username: 桜海
+          event_id: 3
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 3
+          created_at: "2021-06-12T22:18:54Z"
+          updated_at: "2021-06-12T22:18:54Z"
+        - id: 245
+          user_id: 6415
+          username: 川越磐
+          event_id: 3
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 2
+          created_at: "2020-10-18T14:58:42Z"
+          updated_at: "2020-10-18T14:58:42Z"
+        - id: 246
+          user_id: 1223
+          username: 朝倉たくみ
+          event_id: 3
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 5
+          created_at: "2020-12-22T17:46:54Z"
+          updated_at: "2020-12-22T17:46:54Z"
+        - id: 247
+          user_id: 8574
+          username: 池田あいこ
+          event_id: 3
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 1
+          created_at: "2021-07-02T23:30:42Z"
+          updated_at: "2021-07-02T23:30:42Z"
+        - id: 248
+          user_id: 3676
+          username: 曽根ユカ
+          event_id: 3
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 2
+          created_at: "2021-03-18T06:56:21Z"
+          updated_at: "2021-03-18T06:56:21Z"
+        - id: 249
+          user_id: 8149
+          username: 畑可憐
+          event_id: 3
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 4
+          created_at: "2020-11-14T20:44:11Z"
+          updated_at: "2020-11-14T20:44:11Z"
+        - id: 250
+          user_id: 8529
+          username: 上地さとみ
+          event_id: 3
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 3
+          created_at: "2021-09-05T05:17:04Z"
+          updated_at: "2021-09-05T05:17:04Z"
+        - id: 251
+          user_id: 7676
+          username: 細川たくや
+          event_id: 3
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 4
+          created_at: "2021-06-19T18:54:09Z"
+          updated_at: "2021-06-19T18:54:09Z"
+
+  - name: Success to get reservations of specific events when artist requests own events with paging
+    request:
+      url: "{tavern.env_vars.url}/events/3/reservations?limit=1&offset=1"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+      json:
+        - id: 243
+          user_id: 4918
+          username: 五味ジュリア
+          event_id: 3
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 3
+          created_at: "2021-01-22T22:12:24Z"
+          updated_at: "2021-01-22T22:12:24Z"
+
+  - type: ref
+    id: login_get_token_of_owner
+  - name: Success to get reservations of specific events
+    request:
+      url: "{tavern.env_vars.url}/events/3/reservations"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+      json:
+        - id: 242
+          user_id: 6841
+          username: 上間隼人
+          event_id: 3
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 5
+          created_at: "2020-12-10T15:21:57Z"
+          updated_at: "2020-12-10T15:21:57Z"
+        - id: 243
+          user_id: 4918
+          username: 五味ジュリア
+          event_id: 3
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 3
+          created_at: "2021-01-22T22:12:24Z"
+          updated_at: "2021-01-22T22:12:24Z"
+        - id: 244
+          user_id: 3139
+          username: 桜海
+          event_id: 3
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 3
+          created_at: "2021-06-12T22:18:54Z"
+          updated_at: "2021-06-12T22:18:54Z"
+        - id: 245
+          user_id: 6415
+          username: 川越磐
+          event_id: 3
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 2
+          created_at: "2020-10-18T14:58:42Z"
+          updated_at: "2020-10-18T14:58:42Z"
+        - id: 246
+          user_id: 1223
+          username: 朝倉たくみ
+          event_id: 3
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 5
+          created_at: "2020-12-22T17:46:54Z"
+          updated_at: "2020-12-22T17:46:54Z"
+        - id: 247
+          user_id: 8574
+          username: 池田あいこ
+          event_id: 3
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 1
+          created_at: "2021-07-02T23:30:42Z"
+          updated_at: "2021-07-02T23:30:42Z"
+        - id: 248
+          user_id: 3676
+          username: 曽根ユカ
+          event_id: 3
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 2
+          created_at: "2021-03-18T06:56:21Z"
+          updated_at: "2021-03-18T06:56:21Z"
+        - id: 249
+          user_id: 8149
+          username: 畑可憐
+          event_id: 3
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 4
+          created_at: "2020-11-14T20:44:11Z"
+          updated_at: "2020-11-14T20:44:11Z"
+        - id: 250
+          user_id: 8529
+          username: 上地さとみ
+          event_id: 3
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 3
+          created_at: "2021-09-05T05:17:04Z"
+          updated_at: "2021-09-05T05:17:04Z"
+        - id: 251
+          user_id: 7676
+          username: 細川たくや
+          event_id: 3
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 4
+          created_at: "2021-06-19T18:54:09Z"
+          updated_at: "2021-06-19T18:54:09Z"
+
+---
+test_name: Get reservations of specific events return 400
+
+includes:
+  - !include auth_stage.yaml
+
+stages:
+  - type: ref
+    id: login_get_token_of_artist
+  - name: Return 400 when event_id is invalid
+    request:
+      url: "{tavern.env_vars.url}/events/invalid/reservations"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 400
+      json:
+        message: !anystr
+
+  - name: Return 400 when paging is invalid type
+    request:
+      url: "{tavern.env_vars.url}/events/3/reservations?limit=invalid&offset=invalid"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+  - name: Return 400 when paging is minus value
+    request:
+      url: "{tavern.env_vars.url}/events/3/reservations?limit=-1&offset=-1"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+---
+test_name: Get reservations of specific events return 401
+stages:
+  - name: Return 401 when No Login
+    request:
+      url: "{tavern.env_vars.url}/events/1/reservations"
+      method: GET
+    response:
+      status_code: 401
+      json:
+        message: !anystr
+
+---
+test_name: Get reservations of specific events return 403
+
+includes:
+  - !include auth_stage.yaml
+
+stages:
+  - type: ref
+    id: login_get_token
+  - name: Return 403 when accessing by audience
+    request:
+      url: "{tavern.env_vars.url}/events/1/reservations"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 403
+      json:
+        message: !anystr
+
+  - type: ref
+    id: login_get_token_of_artist
+  - name: Return 403 when artist request to get reservations of other artist event
+    request:
+      url: "{tavern.env_vars.url}/events/5/reservations"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 403
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+---
+test_name: Get reservations of specific events return 404
+
+includes:
+  - !include auth_stage.yaml
+
+stages:
+  - type: ref
+    id: login_get_token_of_artist
+  - name: Return 404 when event id is negative
+    request:
+      url: "{tavern.env_vars.url}/events/-1/reservations"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 404
+      json:
+        message: !anystr
+
+  - name: Return 404 when event id doesn't exist
+    request:
+      url: "{tavern.env_vars.url}/events/9999/reservations"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 404
+      json:
+        message: !anystr
+

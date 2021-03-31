@@ -1,0 +1,76 @@
+---
+# - name: 'run force initialization script'
+#   command: ./initialize_all_db.sh
+#   args:
+#     chdir: '{{ app_dir }}/common/db/'
+#   become: true
+
+- name: 'put login info to ENV file'
+  template:
+    src: env.j2
+    dest: '/home/{{ player_name }}/.env'
+    owner: '{{ player_name }}'
+    group: '{{ group_name }}'
+  when: inventory_hostname in groups['app']
+
+- name: 'move seed.sql to app/common'
+  unarchive:
+    src: 'seed.sql.tgz'
+    dest: '{{ app_dir }}/common/db/'
+    owner: '{{ player_name }}'
+    group: '{{ group_name }}'
+  when: local_env is not defined
+
+- name: 'move seed.sql to app/common for vagrant env'
+  unarchive:
+    src: 'seed.sql.tgz'
+    dest: '/vagrant/infra/production/roles/deploy_app/files'
+    owner: '{{ player_name }}'
+    group: '{{ group_name }}'
+  when: local_env is defined
+
+- name: 'copy initialize_reservations.sql to app/common'
+  copy:
+    src: 'initial_reservations.sql'
+    dest: '{{ app_dir }}/common/db/'
+    owner: '{{ player_name }}'
+    group: '{{ group_name }}'
+
+- name: 'copy initialize_timeslots.sql to app/common'
+  copy:
+    src: 'initial_timeslots.sql'
+    dest: '{{ app_dir }}/common/db/'
+    owner: '{{ player_name }}'
+    group: '{{ group_name }}'
+
+- name: 'insert seed data to mysql'
+  mysql_db:
+    state: import
+    name: '{{ db.name }}'
+    target: '{{ app_dir }}/common/db/seed.sql'
+    login_user: root
+    login_password: '{{ db.root_password }}'
+  when: not local_env
+
+- name: 'insert seed data to mysql for vagrant env'
+  mysql_db:
+    state: import
+    name: '{{ db.name }}'
+    target: '/vagrant/infra/production/roles/deploy_app/files/seed.sql'
+    login_user: root
+    login_password: '{{ db.root_password }}'
+  when: local_env | bool
+
+- name: 'copy revoked token list for app'
+  copy:
+    src: revoked_token.list
+    dest: '{{ app.revocated_token_list }}'
+    owner: '{{ player_name }}'
+    group: '{{ group_name }}'
+
+- name: 'copy revoked token list for backup'
+  copy:
+    src: revoked_token.list
+    dest: '{{ app_dir }}/common/db/seed.list'
+    owner: '{{ player_name }}'
+    group: '{{ group_name }}'

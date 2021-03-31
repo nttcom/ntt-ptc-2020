@@ -1,0 +1,13 @@
+[Unit]
+Description=N-PTC portal app
+After=mysql.service
+
+[Service]
+User=ptc_admin
+Type=simple
+EnvironmentFile=/home/ptc_admin/n-isucon-2020/portal/.env
+WorkingDirectory=/home/ptc_admin/n-isucon-2020/portal
+ExecStart=/home/ptc_admin/.rbenv/shims/bundle exec pumactl start -F /home/ptc_admin/n-isucon-2020/portal/puma.rb
+
+[Install]
+WantedBy=multi-user.targetn

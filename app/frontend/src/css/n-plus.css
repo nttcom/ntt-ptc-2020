@@ -1,0 +1,39 @@
+@import url("https://fonts.googleapis.com/earlyaccess/nicomoji.css");
+
+.bg-nplus {
+  background-color: #00b8d9 !important;
+  border-color: #00a3bf !important;
+}
+.nplus-logo {
+  color: #00b8d9 !important;
+  line-height: 0;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 0 #fff, -2px -2px 0 #fff, -2px 2px 0 #fff, 2px -2px 0 #fff, 0px 2px 0 #fff, 0 -2px 0 #fff, -2px 0 0 #fff, 2px 0 0 #fff;
+}
+.nplus-logo * {
+  font-family: "Nico Moji" !important;
+  font-style: italic;
+}
+.nplus-logo .nplus-logo-caption {
+  font-size: 1rem;
+  line-height: 0;
+}
+.nplus-logo .nplus-logo-n {
+  font-size: 3rem;
+  line-height: 3rem;
+}
+.nplus-logo .nplus-logo-plus {
+  font-size: 2rem;
+  line-height: 2rem;
+  vertical-align: super;
+}
+.card-img, .card-img-top, .card-img-bottom {
+  object-fit: cover;
+  object-position: 50% 50%;
+}
+.card-img {
+  height: 250px;
+}
+.card-img-top {
+  height: 350px;
+}

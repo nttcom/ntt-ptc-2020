@@ -1,0 +1,281 @@
+---
+test_name: Get event image Success Testcase
+
+stages:
+  - name: Success to get event image
+    request:
+      url: "{tavern.env_vars.url}/events/1/image"
+      method: GET
+    response:
+      status_code: 200
+      headers:
+        content-type: image/png
+
+---
+test_name: Get event image return 400
+
+stages:
+  - name: Return 400 when event_id is invalid
+    request:
+      url: "{tavern.env_vars.url}/events/invalid/image"
+      method: GET
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+---
+test_name: Get event image return 404
+
+stages:
+  - name: Return 404 when event doesn't exist
+    request:
+      url: "{tavern.env_vars.url}/events/999999/image"
+      method: GET
+    response:
+      status_code: 404
+      json:
+        message: !anystr
+
+  - name: Return 404 when event_id is minus value
+    request:
+      url: "{tavern.env_vars.url}/events/-1/image"
+      method: GET
+    response:
+      status_code: 404
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+---
+test_name: Put & Get event image Success Testcase
+
+includes:
+  - !include auth_stage.yaml
+
+stages:
+  - type: ref
+    id: login_get_token_of_artist
+  - name: Success to put event image
+    request:
+      url: "{tavern.env_vars.url}/events/1/image"
+      method: PUT
+      headers:
+        content-type: multipart/form-data
+        Authorization: "Bearer {access_token:s}"
+      files:
+        image: "./images/1.png" # ここに {tavern.env_vars.IMAGE_PATH} 書いても展開されないのマジでイケてない
+    response:
+      status_code: 204
+
+  - name: Success to get event specific image
+    request:
+      url: "{tavern.env_vars.url}/events/1/image"
+      method: GET
+    response:
+      status_code: 200
+      headers:
+        content-type: image/png
+      verify_response_with:
+        function: testing_utils:validate_image
+        extra_kwargs:
+          event_id: 1
+
+  - name: Success to put event image (rewrite)
+    request:
+      url: "{tavern.env_vars.url}/events/1/image"
+      method: PUT
+      headers:
+        content-type: multipart/form-data
+        Authorization: "Bearer {access_token:s}"
+      files:
+        image: "./images/2.png" # ここに {tavern.env_vars.IMAGE_PATH} 書いても展開されないのマジでイケてない
+    response:
+      status_code: 204
+
+  - name: Success to get event specific image
+    request:
+      url: "{tavern.env_vars.url}/events/1/image"
+      method: GET
+    response:
+      status_code: 200
+      headers:
+        content-type: image/png
+      verify_response_with:
+        function: testing_utils:validate_image
+        extra_kwargs:
+          event_id: 2
+
+  - type: ref
+    id: login_get_token_of_owner
+  - name: Success to put event image by owner
+    request:
+      url: "{tavern.env_vars.url}/events/1/image"
+      method: PUT
+      headers:
+        content-type: multipart/form-data
+        Authorization: "Bearer {access_token:s}"
+      files:
+        image: "./images/1.png" # ここに {tavern.env_vars.IMAGE_PATH} 書いても展開されないのマジでイケてない
+    response:
+      status_code: 204
+
+  - name: Success to get event specific image
+    request:
+      url: "{tavern.env_vars.url}/events/1/image"
+      method: GET
+    response:
+      status_code: 200
+      headers:
+        content-type: image/png
+      verify_response_with:
+        function: testing_utils:validate_image
+        extra_kwargs:
+          event_id: 1
+
+---
+test_name: Put event image return 400
+
+includes:
+  - !include auth_stage.yaml
+
+stages:
+  - type: ref
+    id: login_get_token_of_artist
+
+  - name: Return 400 when event_id is invalid
+    request:
+      url: "{tavern.env_vars.url}/events/invalid/image"
+      method: PUT
+      headers:
+        content-type: multipart/form-data
+        Authorization: "Bearer {access_token:s}"
+      files:
+        image: "./images/1.png" # ここに {tavern.env_vars.IMAGE_PATH} 書いても展開されないのマジでイケてない
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+  - name: Return 400 when image is not png
+    request:
+      url: "{tavern.env_vars.url}/events/1/image"
+      method: PUT
+      headers:
+        content-type: multipart/form-data
+        Authorization: "Bearer {access_token:s}"
+      files:
+        image: "./images/dummy.txt" # ここに {tavern.env_vars.IMAGE_PATH} 書いても展開されないのマジでイケてない
+    response:
+      status_code: 400
+
+---
+test_name: Put event image return 401
+
+stages:
+  - name: Return 401 when event_id is invalid
+    request:
+      url: "{tavern.env_vars.url}/events/1/image"
+      method: PUT
+      headers:
+        content-type: multipart/form-data
+      files:
+        image: "./images/1.png" # ここに {tavern.env_vars.IMAGE_PATH} 書いても展開されないのマジでイケてない
+    response:
+      status_code: 401
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+---
+test_name: Put event image return 403
+
+includes:
+  - !include auth_stage.yaml
+
+stages:
+  - type: ref
+    id: login_get_token
+
+  - name: Return 403 when role is audience
+    request:
+      url: "{tavern.env_vars.url}/events/1/image"
+      method: PUT
+      headers:
+        content-type: multipart/form-data
+        Authorization: "Bearer {access_token:s}"
+      files:
+        image: "./images/1.png" # ここに {tavern.env_vars.IMAGE_PATH} 書いても展開されないのマジでイケてない
+    response:
+      status_code: 403
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - type: ref
+    id: login_get_token_of_artist
+
+  - name: Return 403 when role is other artist
+    request:
+      url: "{tavern.env_vars.url}/events/5/image"
+      method: PUT
+      headers:
+        content-type: multipart/form-data
+        Authorization: "Bearer {access_token:s}"
+      files:
+        image: "./images/1.png" # ここに {tavern.env_vars.IMAGE_PATH} 書いても展開されないのマジでイケてない
+    response:
+      status_code: 403
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+
+---
+test_name: Put event image return 404
+
+includes:
+  - !include auth_stage.yaml
+
+stages:
+  - type: ref
+    id: login_get_token_of_artist
+
+  - name: Return 404 when event doesn't exist
+    request:
+      url: "{tavern.env_vars.url}/events/999999/image"
+      method: PUT
+      headers:
+        content-type: multipart/form-data
+        Authorization: "Bearer {access_token:s}"
+      files:
+        image: "./images/1.png" # ここに {tavern.env_vars.IMAGE_PATH} 書いても展開されないのマジでイケてない
+    response:
+      status_code: 404
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 404 when event_id is minus value
+    request:
+      url: "{tavern.env_vars.url}/events/-1/image"
+      method: PUT
+      headers:
+        content-type: multipart/form-data
+        Authorization: "Bearer {access_token:s}"
+      files:
+        image: "./images/1.png" # ここに {tavern.env_vars.IMAGE_PATH} 書いても展開されないのマジでイケてない
+    response:
+      status_code: 404
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr

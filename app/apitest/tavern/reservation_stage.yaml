@@ -1,0 +1,46 @@
+---
+name: Reservation create/delete stage
+description:
+  Reusable test stages for reservation
+
+stages:
+  - id: create_reservation
+    name: Success to create a reservations
+    request:
+      url: "{tavern.env_vars.url}/events/{resv_event.id:d}/reservations"
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        num_of_resv: 3
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      json:
+        id: !anyint
+        user_id: !int "{user.id:d}"
+        username: "{user.username:s}"
+        event_id: !int "{resv_event.id:d}"
+        event_name: !anystr
+        event_price: !anyint
+        event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+        event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+        venue_name: !anystr
+        num_of_resv: !anyint
+        created_at: !anystr
+        updated_at: !anystr
+      save:
+        json:
+          created_resv_id: id
+
+  - id: delete_reservation
+    name: Delete a reservation
+    request:
+      url: "{tavern.env_vars.url:s}/reservations/{created_resv_id:d}"
+      method: DELETE
+      headers:
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 204

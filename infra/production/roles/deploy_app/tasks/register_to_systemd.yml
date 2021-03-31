@@ -1,0 +1,22 @@
+---
+- name: 'link to init.sh'
+  file:
+    src: '{{ app_dir }}/common/db'
+    dest: '{{ app_dir }}/{{ item }}/scripts'
+    state: link
+  with_items:
+    - python
+    - ruby
+    - go
+    - js
+
+- name: 'put systemd file for all apps'
+  template:
+    src: app.service.j2
+    dest: /etc/systemd/system/{{ app.name}}_{{ item.name }}.service
+  with_items:
+    - { name: python, command: '/home/{{ player_name }}/.local/bin/gunicorn -w 5 --thread 5 -b 0.0.0.0:5000 app:app' }
+    - { name: ruby, command: '/usr/local/bin/bundle exec rackup -p 5000' }
+    - { name: go, command: '{{ app_dir }}/go/nplus' }
+    - { name: js, command: '/usr/local/bin/node app.js' }
+  notify: reload systemd

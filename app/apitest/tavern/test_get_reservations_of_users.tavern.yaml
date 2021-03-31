@@ -1,0 +1,307 @@
+---
+test_name: Get reservations of specific users Success Testcase
+
+includes:
+  - !include auth_stage.yaml
+
+stages:
+  - type: ref
+    id: login_get_token
+  # TODO: デフォルトの挙動が ?limit=5&offset=0 になっていることのテスト
+  - name: Success to get reservations of specific users
+    request:
+      url: "{tavern.env_vars.url}/users/{user.id:d}/reservations"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+      json:
+        - id: 15989
+          user_id: 1
+          username: user01
+          event_id: 108
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 4
+          created_at: "2019-12-02T20:40:32Z"
+          updated_at: "2019-12-02T20:40:32Z"
+        - id: 52783
+          user_id: 1
+          username: user01
+          event_id: 370
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 3
+          created_at: "2019-08-10T15:04:24Z"
+          updated_at: "2019-08-10T15:04:24Z"
+        - id: 66868
+          user_id: 1
+          username: user01
+          event_id: 462
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 1
+          created_at: "2019-09-26T18:13:58Z"
+          updated_at: "2019-09-26T18:13:58Z"
+        - id: 68440
+          user_id: 1
+          username: user01
+          event_id: 480
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 1
+          created_at: "2020-06-23T02:05:36Z"
+          updated_at: "2020-06-23T02:05:36Z"
+        - id: 88382
+          user_id: 1
+          username: user01
+          event_id: 627
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 3
+          created_at: "2020-09-19T08:24:26Z"
+          updated_at: "2020-09-19T08:24:26Z"
+
+
+  - name: Seccess to get reservations of specific users with paging
+    request:
+      url: "{tavern.env_vars.url}/users/{user.id:d}/reservations?limit=1&offset=1"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+      json:
+        - id: 52783
+          user_id: 1
+          username: user01
+          event_id: 370
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 3
+          created_at: "2019-08-10T15:04:24Z"
+          updated_at: "2019-08-10T15:04:24Z"
+
+  - type: ref
+    id: login_get_token_of_owner
+  - name: Success to get reservations of specific users by owner
+    request:
+      url: "{tavern.env_vars.url}/users/{user.id:d}/reservations"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+      json:
+        - id: 15989
+          user_id: 1
+          username: user01
+          event_id: 108
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 4
+          created_at: "2019-12-02T20:40:32Z"
+          updated_at: "2019-12-02T20:40:32Z"
+        - id: 52783
+          user_id: 1
+          username: user01
+          event_id: 370
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 3
+          created_at: "2019-08-10T15:04:24Z"
+          updated_at: "2019-08-10T15:04:24Z"
+        - id: 66868
+          user_id: 1
+          username: user01
+          event_id: 462
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 1
+          created_at: "2019-09-26T18:13:58Z"
+          updated_at: "2019-09-26T18:13:58Z"
+        - id: 68440
+          user_id: 1
+          username: user01
+          event_id: 480
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 1
+          created_at: "2020-06-23T02:05:36Z"
+          updated_at: "2020-06-23T02:05:36Z"
+        - id: 88382
+          user_id: 1
+          username: user01
+          event_id: 627
+          event_name: !anystr
+          event_price: !anyint
+          event_start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          event_end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          venue_name: !anystr
+          num_of_resv: 3
+          created_at: "2020-09-19T08:24:26Z"
+          updated_at: "2020-09-19T08:24:26Z"
+
+---
+test_name: Get reservations of specific users return 400
+
+includes:
+  - !include auth_stage.yaml
+
+stages:
+  - type: ref
+    id: login_get_token_of_owner
+  - name: Return 400 when user_id is invalid
+    request:
+      url: "{tavern.env_vars.url}/users/invalid/reservations"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 400
+
+  - name: Return 400 when paging is invalid type
+    request:
+      url: "{tavern.env_vars.url}/users/{user.id:d}/reservations?limit=invalid&offset=invalid"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+  - name: Return 400 when paging is minus value
+    request:
+      url: "{tavern.env_vars.url}/users/{user.id:d}/reservations?limit=-1&offset=-1"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+---
+test_name: Get reservations of specific users return 401
+
+includes:
+  - !include auth_stage.yaml
+
+stages:
+  - type: ref
+    id: login_get_token_of_artist
+
+  - name: Return 401 when No Login
+    request:
+      url: "{tavern.env_vars.url}/users/1/reservations"
+      method: GET
+    response:
+      status_code: 401
+
+---
+test_name: Get reservations of specific users return 403
+
+includes:
+  - !include auth_stage.yaml
+
+stages:
+  - type: ref
+    id: login_get_token_of_artist
+
+  - name: Return 403 when accessing by artist
+    request:
+      url: "{tavern.env_vars.url}/users/{user.id:d}/reservations"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 403
+
+  - type: ref
+    id: login_get_token
+  - name: Return 403 when accessing different user_id by user
+    request:
+      url: "{tavern.env_vars.url}/users/2/reservations"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 403
+
+---
+test_name: Get reservations of specific users return 404
+
+includes:
+  - !include auth_stage.yaml
+
+stages:
+  - type: ref
+    id: login_get_token_of_owner
+  - name: Return 404 when event id is negative
+    request:
+      url: "{tavern.env_vars.url}/users/-1/reservations"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 404
+
+  - name: Return 404 when event id doesn't exist
+    request:
+      url: "{tavern.env_vars.url}/users/99999/reservations"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 404

@@ -1,0 +1,483 @@
+---
+test_name: Get events Success Testcase
+
+stages:
+  # TODO: デフォルトの挙動が ?limit=12&offset=0 になっていることのテスト
+  - name: Success to get event list
+    request:
+      url: "{tavern.env_vars.url}/events"
+      method: GET
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+      json:
+        - id: 2
+          event_name: !anystr
+          event_genre_id: !anyint
+          artist_id: 3
+          artist_name: "user03"
+          timeslot_ids: !anylist
+          venue_id: !anyint
+          venue_name: !anystr
+          price: !anyint
+          start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          created_at: "2020-07-01T00:00:00Z"
+          updated_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          capacity: !anyint
+          current_resv: !anyint
+        - id: 3
+          event_name: !anystr
+          event_genre_id: !anyint
+          artist_id: 3
+          artist_name: "user03"
+          timeslot_ids: !anylist
+          venue_id: !anyint
+          venue_name: !anystr
+          price: !anyint
+          start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          created_at: "2020-07-01T00:00:00Z"
+          updated_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          capacity: !anyint
+          current_resv: !anyint
+        - id: 4
+          event_name: !anystr
+          event_genre_id: !anyint
+          artist_id: 3
+          artist_name: "user03"
+          timeslot_ids: !anylist
+          venue_id: !anyint
+          venue_name: !anystr
+          price: !anyint
+          start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          created_at: "2020-10-01T00:00:00Z"
+          updated_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          capacity: !anyint
+          current_resv: !anyint
+        - id: 8
+          event_name: !anystr
+          event_genre_id: !anyint
+          artist_id: 9085
+          artist_name: "神奈川はやて"
+          timeslot_ids: !anylist
+          venue_id: !anyint
+          venue_name: !anystr
+          price: !anyint
+          start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          created_at: "2020-04-30T02:04:02Z"
+          updated_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          capacity: !anyint
+          current_resv: !anyint
+        - id: 11
+          event_name: !anystr
+          event_genre_id: !anyint
+          artist_id: 9104
+          artist_name: "玉木いずみ"
+          timeslot_ids: !anylist
+          venue_id: !anyint
+          venue_name: !anystr
+          price: !anyint
+          start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          created_at: "2020-06-06T03:52:42Z"
+          updated_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          capacity: !anyint
+          current_resv: !anyint
+        - id: 12
+          event_name: !anystr
+          event_genre_id: !anyint
+          artist_id: 9181
+          artist_name: "正親町レイ"
+          timeslot_ids: !anylist
+          venue_id: !anyint
+          venue_name: !anystr
+          price: !anyint
+          start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          created_at: "2020-04-23T04:08:53Z"
+          updated_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          capacity: !anyint
+          current_resv: !anyint
+        - id: 13
+          event_name: !anystr
+          event_genre_id: !anyint
+          artist_id: 9469
+          artist_name: "保坂未来"
+          timeslot_ids: !anylist
+          venue_id: !anyint
+          venue_name: !anystr
+          price: !anyint
+          start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          created_at: "2020-05-14T18:36:28Z"
+          updated_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          capacity: !anyint
+          current_resv: !anyint
+        - id: 14
+          event_name: !anystr
+          event_genre_id: !anyint
+          artist_id: 9898
+          artist_name: "柳田正"
+          timeslot_ids: !anylist
+          venue_id: !anyint
+          venue_name: !anystr
+          price: !anyint
+          start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          created_at: "2020-03-31T11:16:26Z"
+          updated_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          capacity: !anyint
+          current_resv: !anyint
+        - id: 15
+          event_name: !anystr
+          event_genre_id: !anyint
+          artist_id: 9340
+          artist_name: "十河ゆい"
+          timeslot_ids: !anylist
+          venue_id: !anyint
+          venue_name: !anystr
+          price: !anyint
+          start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          created_at: "2019-10-10T02:23:31Z"
+          updated_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          capacity: !anyint
+          current_resv: !anyint
+        - id: 17
+          event_name: !anystr
+          event_genre_id: !anyint
+          artist_id: 9467
+          artist_name: "赤木京太郎"
+          timeslot_ids: !anylist
+          venue_id: !anyint
+          venue_name: !anystr
+          price: !anyint
+          start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          created_at: "2019-10-19T03:19:47Z"
+          updated_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          capacity: !anyint
+          current_resv: !anyint
+        - id: 19
+          event_name: !anystr
+          event_genre_id: !anyint
+          artist_id: 9142
+          artist_name: "前英雄"
+          timeslot_ids: !anylist
+          venue_id: !anyint
+          venue_name: !anystr
+          price: !anyint
+          start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          created_at: "2020-01-20T01:23:11Z"
+          updated_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          capacity: !anyint
+          current_resv: !anyint
+        - id: 21
+          event_name: !anystr
+          event_genre_id: !anyint
+          artist_id: 9803
+          artist_name: "榛名早人"
+          timeslot_ids: !anylist
+          venue_id: !anyint
+          venue_name: !anystr
+          price: !anyint
+          start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          created_at: "2019-12-31T08:55:20Z"
+          updated_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          capacity: !anyint
+          current_resv: !anyint
+
+
+  - name: Success to get event list with paging
+    request:
+      url: "{tavern.env_vars.url}/events?limit=1&offset=1"
+      method: GET
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+      json:
+        - id: 3
+          event_name: !anystr
+          event_genre_id: !anyint
+          artist_id: 3
+          artist_name: "user03"
+          timeslot_ids: !anylist
+          venue_id: !anyint
+          venue_name: !anystr
+          price: !anyint
+          start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          created_at: "2020-07-01T00:00:00Z"
+          updated_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          capacity: !anyint
+          current_resv: !anyint
+
+  - name: Success to get event list when user requests by artist_id
+    request:
+      url: "{tavern.env_vars.url}/events?user_id=3"
+      method: GET
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+      json:
+        - id: 2
+          event_name: !anystr
+          event_genre_id: !anyint
+          artist_id: 3
+          artist_name: "user03"
+          timeslot_ids: !anylist
+          venue_id: !anyint
+          venue_name: !anystr
+          price: !anyint
+          start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          created_at: "2020-07-01T00:00:00Z"
+          updated_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          capacity: !anyint
+          current_resv: !anyint
+        - id: 3
+          event_name: !anystr
+          event_genre_id: !anyint
+          artist_id: 3
+          artist_name: "user03"
+          timeslot_ids: !anylist
+          venue_id: !anyint
+          venue_name: !anystr
+          price: !anyint
+          start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          created_at: "2020-07-01T00:00:00Z"
+          updated_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          capacity: !anyint
+          current_resv: !anyint
+        - id: 4
+          event_name: !anystr
+          event_genre_id: !anyint
+          artist_id: 3
+          artist_name: "user03"
+          timeslot_ids: !anylist
+          venue_id: !anyint
+          venue_name: !anystr
+          price: !anyint
+          start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          created_at: "2020-10-01T00:00:00Z"
+          updated_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          capacity: !anyint
+          current_resv: !anyint
+        - id: 3021
+          event_name: !anystr
+          event_genre_id: !anyint
+          artist_id: 3
+          artist_name: "user03"
+          timeslot_ids: !anylist
+          venue_id: !anyint
+          venue_name: !anystr
+          price: !anyint
+          start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          created_at: "2020-09-03T16:03:59Z"
+          updated_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          capacity: !anyint
+          current_resv: !anyint
+        - id: 3022
+          event_name: !anystr
+          event_genre_id: !anyint
+          artist_id: 3
+          artist_name: "user03"
+          timeslot_ids: !anylist
+          venue_id: !anyint
+          venue_name: !anystr
+          price: !anyint
+          start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          created_at: "2020-09-03T16:10:32Z"
+          updated_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          capacity: !anyint
+          current_resv: !anyint
+        - id: 3023
+          event_name: !anystr
+          event_genre_id: !anyint
+          artist_id: 3
+          artist_name: "user03"
+          timeslot_ids: !anylist
+          venue_id: !anyint
+          venue_name: !anystr
+          price: !anyint
+          start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          created_at: "2020-09-03T16:11:06Z"
+          updated_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          capacity: !anyint
+          current_resv: !anyint
+        - id: 3024
+          event_name: !anystr
+          event_genre_id: !anyint
+          artist_id: 3
+          artist_name: "user03"
+          timeslot_ids: !anylist
+          venue_id: !anyint
+          venue_name: !anystr
+          price: !anyint
+          start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          created_at: "2020-09-03T16:11:52Z"
+          updated_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          capacity: !anyint
+          current_resv: !anyint
+        - id: 3025
+          event_name: !anystr
+          event_genre_id: !anyint
+          artist_id: 3
+          artist_name: "user03"
+          timeslot_ids: !anylist
+          venue_id: !anyint
+          venue_name: !anystr
+          price: !anyint
+          start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          created_at: "2020-09-03T16:12:25Z"
+          updated_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          capacity: !anyint
+          current_resv: !anyint
+        - id: 3026
+          event_name: !anystr
+          event_genre_id: !anyint
+          artist_id: 3
+          artist_name: "user03"
+          timeslot_ids: !anylist
+          venue_id: !anyint
+          venue_name: !anystr
+          price: !anyint
+          start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          created_at: "2020-09-03T16:12:59Z"
+          updated_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          capacity: !anyint
+          current_resv: !anyint
+        - id: 3030
+          event_name: !anystr
+          event_genre_id: !anyint
+          artist_id: 3
+          artist_name: "user03"
+          timeslot_ids: !anylist
+          venue_id: !anyint
+          venue_name: !anystr
+          price: !anyint
+          start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          created_at: "2020-09-03T16:17:53Z"
+          updated_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          capacity: !anyint
+          current_resv: !anyint
+        - id: 3034
+          event_name: !anystr
+          event_genre_id: !anyint
+          artist_id: 3
+          artist_name: "user03"
+          timeslot_ids: !anylist
+          venue_id: !anyint
+          venue_name: !anystr
+          price: !anyint
+          start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          created_at: "2020-09-03T16:19:37Z"
+          updated_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          capacity: !anyint
+          current_resv: !anyint
+        - id: 3035
+          event_name: !anystr
+          event_genre_id: !anyint
+          artist_id: 3
+          artist_name: "user03"
+          timeslot_ids: !anylist
+          venue_id: !anyint
+          venue_name: !anystr
+          price: !anyint
+          start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          created_at: "2020-09-03T16:20:31Z"
+          updated_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          capacity: !anyint
+          current_resv: !anyint
+
+
+  - name: Success to get event list when user requests by artist_id with paging
+    request:
+      url: "{tavern.env_vars.url}/events?user_id=3&limit=1&offset=1"
+      method: GET
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+      json:
+        - id: 3
+          event_name: !anystr
+          event_genre_id: !anyint
+          artist_id: 3
+          artist_name: "user03"
+          timeslot_ids: !anylist
+          venue_id: !anyint
+          venue_name: !anystr
+          price: !anyint
+          start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          created_at: "2020-07-01T00:00:00Z"
+          updated_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+          capacity: !anyint
+          current_resv: !anyint
+
+  - name: Success to get empty event list when user requests by non artist_id
+    request:
+      url: "{tavern.env_vars.url}/events?user_id=4"
+      method: GET
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+      json: []
+
+---
+test_name: Get events return 400 testcase
+
+stages:
+  - name: Return 400 when user_id is invalid
+    request:
+      url: "{tavern.env_vars.url}/events?user_id=artist"
+      method: GET
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 400 when paging is invalid type
+    request:
+      url: "{tavern.env_vars.url}/events?limit=invalid&offset=invalid"
+      method: GET
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 400 when paging is minus value
+    request:
+      url: "{tavern.env_vars.url}/events?limit=-1&offset=-1"
+      method: GET
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr

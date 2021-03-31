@@ -1,0 +1,830 @@
+---
+test_name: Success test case for `PUT /api/events/:event_id`
+
+includes:
+  - !include auth_stage.yaml
+  - !include event_stages.yaml
+
+stages:
+  - type: ref
+    id: login_get_token_of_artist
+  - type: ref
+    id: create_event
+  - name: Success to update a event
+    request:
+      url: "{tavern.env_vars.url}/events/{created_event_id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        timeslot_ids:
+          - !int "{update_event.timeslot_ids[0]:d}"
+        price: !int "{update_event.price:d}"
+        start_at: "{update_event.start_at:s}"
+        end_at: "{update_event.end_at:s}"
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+      json:
+        id: !anyint "{update_event.id:d}"
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        artist_id: !int "{artist.id:d}"
+        artist_name: "{artist.username:s}"
+        venue_id: !int "{events[0].venue_id:d}"
+        timeslot_ids:
+          - !int "{update_event.timeslot_ids[0]:d}"
+        venue_name: "{venues[0].name}"
+        price: !int "{update_event.price:d}"
+        start_at: "{update_event.start_at:s}"
+        end_at: "{update_event.end_at:s}"
+        created_at: "{event_created_at:s}"
+        updated_at: !anystr
+        capacity: !int "{venues[0].capacity:d}"
+        current_resv: !int "{update_event.current_resv}"
+
+  - type: ref
+    id: login_get_token_of_owner
+  - name: Success to update a event by owner
+    request:
+      url: "{tavern.env_vars.url}/events/{created_event_id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        timeslot_ids:
+          - !int "{update_event.timeslot_ids[0]:d}"
+        price: !int "{update_event.price:d}"
+        start_at: "{update_event.start_at:s}"
+        end_at: "{update_event.end_at:s}"
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+      json:
+        id: !anyint "{update_event.id:d}"
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        artist_id: !int "{artist.id:d}"
+        artist_name: "{artist.username:s}"
+        venue_id: !int "{events[0].venue_id:d}"
+        timeslot_ids:
+          - !int "{update_event.timeslot_ids[0]:d}"
+        venue_name: "{venues[0].name}"
+        price: !int "{update_event.price:d}"
+        start_at: "{update_event.start_at:s}"
+        end_at: "{update_event.end_at:s}"
+        created_at: "{event_created_at:s}"
+        updated_at: !anystr
+        capacity: !int "{venues[0].capacity:d}"
+        current_resv: !int "{update_event.current_resv}"
+
+---
+test_name: PUT /api/events/:event_id return 400
+
+includes:
+  - !include auth_stage.yaml
+
+stages:
+  - type: ref
+    id: login_get_token_of_artist
+  - name: Return 400 when event_name is null
+    request:
+      url: "{tavern.env_vars.url}/events/{update_event.id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        timeslot_ids:
+          - !int "{update_event.timeslot_ids[0]:d}"
+        price: !int "{update_event.price:d}"
+        start_at: "{update_event.start_at:s}"
+        end_at: "{update_event.end_at:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 400 when event_name is empty
+    request:
+      url: "{tavern.env_vars.url}/events/{update_event.id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: ""
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        timeslot_ids:
+          - !int "{update_event.timeslot_ids[0]:d}"
+        price: !int "{update_event.price:d}"
+        start_at: "{update_event.start_at:s}"
+        end_at: "{update_event.end_at:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 400 when event_genre_id is NULL
+    request:
+      url: "{tavern.env_vars.url}/events/{update_event.id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        timeslot_ids:
+          - !int "{update_event.timeslot_ids[0]:d}"
+        price: !int "{update_event.price:d}"
+        start_at: "{update_event.start_at:s}"
+        end_at: "{update_event.end_at:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 400 when event_genre_id is string
+    request:
+      url: "{tavern.env_vars.url}/events/{update_event.id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: "event_genre_id"
+        timeslot_ids:
+          - !int "{update_event.timeslot_ids[0]:d}"
+        price: !int "{update_event.price:d}"
+        start_at: "{update_event.start_at:s}"
+        end_at: "{update_event.end_at:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 400 when event_genre_id is negative
+    request:
+      url: "{tavern.env_vars.url}/events/{update_event.id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: -1
+        timeslot_ids:
+          - !int "{update_event.timeslot_ids[0]:d}"
+        price: !int "{update_event.price:d}"
+        start_at: "{update_event.start_at:s}"
+        end_at: "{update_event.end_at:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 400 when event_genre_id doesn't exist
+    request:
+      url: "{tavern.env_vars.url}/events/{update_event.id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: 99999
+        timeslot_ids:
+          - !int "{update_event.timeslot_ids[0]:d}"
+        price: !int "{update_event.price:d}"
+        start_at: "{update_event.start_at:s}"
+        end_at: "{update_event.end_at:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 400 when timeslot_ids is NULL
+    request:
+      url: "{tavern.env_vars.url}/events/{update_event.id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        price: !int "{update_event.price:d}"
+        start_at: "{update_event.start_at:s}"
+        end_at: "{update_event.end_at:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 400 when timeslot_ids is empty
+    request:
+      url: "{tavern.env_vars.url}/events/{update_event.id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        timeslot_ids: []
+        price: !int "{update_event.price:d}"
+        start_at: "{update_event.start_at:s}"
+        end_at: "{update_event.end_at:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 400 when timeslot_ids is not array
+    request:
+      url: "{tavern.env_vars.url}/events/{update_event.id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        timeslot_ids: !int "{update_event.timeslot_ids[0]:d}"
+        price: !int "{update_event.price:d}"
+        start_at: "{update_event.start_at:s}"
+        end_at: "{update_event.end_at:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 400 when timeslot_ids include not intager
+    request:
+      url: "{tavern.env_vars.url}/events/{update_event.id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        timeslot_ids:
+          - "invalid_id"
+        price: !int "{update_event.price:d}"
+        start_at: "{update_event.start_at:s}"
+        end_at: "{update_event.end_at:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 400 when timeslot_ids has different day timeslot
+    request:
+      url: "{tavern.env_vars.url}/events/{update_event.id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        timeslot_ids:
+          - 4
+          - 5
+        price: !int "{update_event.price:d}"
+        start_at: "{update_event.start_at:s}"
+        end_at: "{update_event.end_at:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 400 when timeslot_ids has different venue_id timeslot
+    request:
+      url: "{tavern.env_vars.url}/events/{update_event.id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        timeslot_ids:
+          - 5
+          - 9
+        price: !int "{update_event.price:d}"
+        start_at: "{update_event.start_at:s}"
+        end_at: "{update_event.end_at:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 400 when timeslot_ids include no existing timeslot
+    request:
+      url: "{tavern.env_vars.url}/events/{update_event.id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        timeslot_ids:
+          - 99999
+        price: !int "{update_event.price:d}"
+        start_at: "{update_event.start_at:s}"
+        end_at: "{update_event.end_at:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 400 when timeslot_ids has 3 ids
+    request:
+      url: "{tavern.env_vars.url}/events/{update_event.id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        timeslot_ids:
+          - 1
+          - 2
+          - 3
+        price: !int "{update_event.price:d}"
+        start_at: "{update_event.start_at:s}"
+        end_at: "{update_event.end_at:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 400 when price is NULL
+    request:
+      url: "{tavern.env_vars.url}/events/{update_event.id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        timeslot_ids:
+          - !int "{update_event.timeslot_ids[0]:d}"
+        start_at: "{update_event.start_at:s}"
+        end_at: "{update_event.end_at:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 400 when price is not intager
+    request:
+      url: "{tavern.env_vars.url}/events/{update_event.id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        timeslot_ids:
+          - !int "{update_event.timeslot_ids[0]:d}"
+        price: "お高い！"
+        start_at: "{update_event.start_at:s}"
+        end_at: "{update_event.end_at:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 400 when price is 0
+    request:
+      url: "{tavern.env_vars.url}/events/{update_event.id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        timeslot_ids:
+          - !int "{update_event.timeslot_ids[0]:d}"
+        price: 0
+        start_at: "{update_event.start_at:s}"
+        end_at: "{update_event.end_at:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 400 when price is negative
+    request:
+      url: "{tavern.env_vars.url}/events/{update_event.id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        timeslot_ids:
+          - !int "{update_event.timeslot_ids[0]:d}"
+        price: -1
+        start_at: "{update_event.start_at:s}"
+        end_at: "{update_event.end_at:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 400 when start_at is NULL
+    request:
+      url: "{tavern.env_vars.url}/events/{update_event.id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        timeslot_ids:
+          - !int "{update_event.timeslot_ids[0]:d}"
+        price: !int "{update_event.price:d}"
+        end_at: "{update_event.end_at:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 400 when start_at is not RFC3339 format
+    request:
+      url: "{tavern.env_vars.url}/events/{update_event.id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        timeslot_ids:
+          - !int "{update_event.timeslot_ids[0]:d}"
+        price: !int "{update_event.price:d}"
+        start_at: "2020/10/01 01:00:00"
+        end_at: "{update_event.end_at:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 400 when start_at earler than timeslot.start_at
+    request:
+      url: "{tavern.env_vars.url}/events/{update_event.id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        timeslot_ids:
+          - !int "{update_event.timeslot_ids[0]:d}"
+        price: !int "{update_event.price:d}"
+        start_at: "2020-09-30T23:59:59Z"
+        end_at: "{update_event.end_at:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 400 when end_at is NULL
+    request:
+      url: "{tavern.env_vars.url}/events/{update_event.id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        timeslot_ids:
+          - !int "{update_event.timeslot_ids[0]:d}"
+        price: !int "{update_event.price:d}"
+        start_at:  "{update_event.start_at:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 400 when end_at is not RFC3339 format
+    request:
+      url: "{tavern.env_vars.url}/events/{update_event.id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        timeslot_ids:
+          - !int "{update_event.timeslot_ids[0]:d}"
+        price: !int "{update_event.price:d}"
+        start_at:  "{update_event.start_at:s}"
+        end_at: "2020/10/01 23:59:59Z"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 400 when end_at older than timeslot.end_at
+    request:
+      url: "{tavern.env_vars.url}/events/{update_event.id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        timeslot_ids:
+          - !int "{update_event.timeslot_ids[0]:d}"
+        price: !int "{update_event.price:d}"
+        start_at:  "{update_event.start_at:s}"
+        end_at: "2020-10-02T00:00:00Z"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 400 when end_at earler than start_at
+    request:
+      url: "{tavern.env_vars.url}/events/{update_event.id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        timeslot_ids:
+          - !int "{update_event.timeslot_ids[0]:d}"
+        price: !int "{update_event.price:d}"
+        start_at:  "{update_event.end_at:s}"
+        end_at:  "{update_event.start_at:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 400 when start/end over timeslot's start/end (timeslot is reserved by other artist)
+    request:
+      url: "{tavern.env_vars.url}/events/{update_event.id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        timeslot_ids:
+          - 2
+        price: !int "{update_event.price:d}"
+        start_at: "{update_event.start_at:s}"
+        end_at: "{update_event.end_at:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+---
+test_name: PUT /api/events/:event_id return 401
+
+includes:
+  - !include auth_stage.yaml
+
+stages:
+  - type: ref
+    id: login_get_token_of_artist
+  - name: Return 401 when user without auth
+    request:
+      url: "{tavern.env_vars.url}/events/{update_event.id:d}"
+      method: PUT
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        timeslot_ids:
+          - !int "{update_event.timeslot_ids[0]:d}"
+        price: !int "{update_event.price:d}"
+        start_at: "{update_event.start_at:s}"
+        end_at: "{update_event.end_at:s}"
+    response:
+      status_code: 401
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+---
+test_name: PUT /api/events/:event_id return 403
+
+includes:
+  - !include auth_stage.yaml
+
+stages:
+  - type: ref
+    id: login_get_token_of_artist
+  - name: Return 403 when artist update other artist event
+    request:
+      url: "{tavern.env_vars.url}/events/{other_artist_event.id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        timeslot_ids:
+          - !int "{update_event.timeslot_ids[0]:d}"
+        price: !int "{update_event.price:d}"
+        start_at: "{update_event.start_at:s}"
+        end_at: "{update_event.end_at:s}"
+    response:
+      status_code: 403
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - type: ref
+    id: login_get_token
+  - name: Return 403 when user update event
+    request:
+      url: "{tavern.env_vars.url}/events/{update_event.id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        timeslot_ids:
+          - !int "{update_event.timeslot_ids[0]:d}"
+        price: !int "{update_event.price:d}"
+        start_at: "{update_event.start_at:s}"
+        end_at: "{update_event.end_at:s}"
+    response:
+      status_code: 403
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+---
+test_name: PUT /api/events/:event_id return 404
+
+includes:
+  - !include auth_stage.yaml
+
+stages:
+  - type: ref
+    id: login_get_token_of_artist
+  - name: Return 404 when artist update no existing event(negative)
+    request:
+      url: "{tavern.env_vars.url}/events/0"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        timeslot_ids:
+          - !int "{update_event.timeslot_ids[0]:d}"
+        price: !int "{update_event.price:d}"
+        start_at: "{update_event.start_at:s}"
+        end_at: "{update_event.end_at:s}"
+    response:
+      status_code: 404
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 404 when artist update no existing event
+    request:
+      url: "{tavern.env_vars.url}/events/9999"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        timeslot_ids:
+          - !int "{update_event.timeslot_ids[0]:d}"
+        price: !int "{update_event.price:d}"
+        start_at: "{update_event.start_at:s}"
+        end_at: "{update_event.end_at:s}"
+    response:
+      status_code: 404
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+---
+test_name: PUT /api/events/:event_id return 409
+
+includes:
+  - !include auth_stage.yaml
+
+stages:
+  - type: ref
+    id: login_get_token_of_artist
+  - name: Return 409 when artist request timeslot_ids that was reserved other user
+    request:
+      url: "{tavern.env_vars.url}/events/{update_event.id:d}"
+      method: PUT
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{update_event.event_name:s}"
+        event_genre_id: !int "{update_event.event_genre_id:d}"
+        timeslot_ids:
+          - !int "{reserved_timeslot.id:d}"
+        price: !int "{update_event.price:d}"
+        start_at: "{reserved_timeslot.start_at:s}"
+        end_at: "{reserved_timeslot.end_at:s}"
+    response:
+      status_code: 409
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+

@@ -1,0 +1,20 @@
+---
+- name: 'add longsleep repo'
+  apt_repository:
+    repo: ppa:longsleep/golang-backports
+    update_cache: true
+    validate_certs: false
+
+- name: 'install golang 1.14'
+  apt:
+    name: '{{ packages }}'
+    state: present
+  vars:
+    packages:
+    - golang-1.14
+    - golang-1.14-go
+
+- name: 'put /etc/profile to set ENV vars for golang'
+  copy:
+    src: profile
+    dest: /etc/profile

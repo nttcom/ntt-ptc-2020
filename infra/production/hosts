@@ -1,0 +1,15 @@
+[app]
+
+[portal]
+
+[bench]
+
+[all:children]
+app
+portal
+bench
+
+[all:vars]
+player_name=ptc-user
+admin_name=ptc_admin
+group_name=ptc

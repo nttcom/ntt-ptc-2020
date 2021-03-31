@@ -1,0 +1,8 @@
+---
+- include: download_from_github.yml
+  become: true
+  when: local_env is not defined
+
+- include: copy_from_local.yml
+  become: true
+  when: local_env is defined

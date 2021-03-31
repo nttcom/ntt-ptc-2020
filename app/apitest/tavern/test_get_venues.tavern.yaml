@@ -1,0 +1,86 @@
+---
+test_name: Get venues Success Testcase
+
+includes:
+  - !include auth_stage.yaml
+
+stages:
+  - type: ref
+    id: login_get_token
+  # TODO: デフォルトの挙動が ?limit=5&offset=0 になっていることのテスト
+  - name: Success to list venues
+    request:
+      url: "{tavern.env_vars.url}/venues"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+      json: !include "response/get_venues.json"
+  - name: Success to list venues with paging
+    request:
+      url: "{tavern.env_vars.url}/venues?limit=1&offset=1"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+      json:
+        - id: 2
+          name: "でんでんコンベンションセンター"
+          capacity: 250
+          created_at: "2003-01-01T00:00:00Z"
+          updated_at: "2005-01-01T00:00:00Z"
+
+---
+test_name: Get venues return 400 testcase
+
+includes:
+  - !include auth_stage.yaml
+
+stages:
+  - type: ref
+    id: login_get_token
+  - name: Return 400 when paging is invalid type
+    request:
+      url: "{tavern.env_vars.url}/venues?limit=invalid&offset=invalid"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+  - name: Return 400 when paging is minus value
+    request:
+      url: "{tavern.env_vars.url}/venues?limit=-1&offset=-1"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+---
+test_name: List venues return 401
+stages:
+  - name: Return 401 when No Login
+    request:
+      url: "{tavern.env_vars.url}/venues"
+      method: GET
+    response:
+      status_code: 401
+

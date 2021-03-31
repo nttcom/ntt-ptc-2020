@@ -1,0 +1,126 @@
+---
+name: Authentication stage
+description:
+  Reusable test stage for authentication
+
+variables:
+  user:
+    id: 1
+    username: user01
+    password: password
+    role: audience
+  audience02:
+    id: 2
+    username: user02
+    password: password
+    role: audience
+  artist:
+    id: 3
+    username: user03
+    password: password
+    role: artist
+  owner:
+    id: 4
+    username: sawady
+    password: password
+    role: owner
+  artist2:
+    id: 5
+    username: "user04"
+    password: "password"
+    role: "artist"
+
+stages:
+  - id: login_get_token
+    name: Login required
+    request:
+      url: "{tavern.env_vars.url:s}/login"
+      method: POST
+      headers:
+        content-type: application/json
+      json:
+        username: "{user.username:s}"
+        password: "{user.password:s}"
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+      json:
+        user_id: !anyint
+        access_token: !anystr
+      save:
+        json:
+          access_token: access_token
+
+  - id: login_get_token_of_artist
+    name: Login required by artist
+    request:
+      url: "{tavern.env_vars.url:s}/login"
+      method: POST
+      headers:
+        content-type: application/json
+      json:
+        username: "{artist.username:s}"
+        password: "{artist.password:s}"
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+      json:
+        user_id: !anyint
+        access_token: !anystr
+      save:
+        json:
+          access_token: access_token
+
+  - id: login_get_token_of_artist2
+    name: Login required by artist2
+    request:
+      url: "{tavern.env_vars.url:s}/login"
+      method: POST
+      headers:
+        content-type: application/json
+      json:
+        username: "{artist2.username:s}"
+        password: "{artist2.password:s}"
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+      json:
+        user_id: !anyint
+        access_token: !anystr
+      save:
+        json:
+          access_token: access_token
+
+  - id: login_get_token_of_owner
+    name: Login required by owner
+    request:
+      url: "{tavern.env_vars.url:s}/login"
+      method: POST
+      headers:
+        content-type: application/json
+      json:
+        username: "{owner.username:s}"
+        password: "{owner.password:s}"
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+      json:
+        user_id: !anyint
+        access_token: !anystr
+      save:
+        json:
+          access_token: access_token
+
+  - id: logout
+    name: Logout for next login
+    request:
+      url: "{tavern.env_vars.url:s}/logout"
+      method: POST
+      headers:
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200

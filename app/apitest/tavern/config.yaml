@@ -1,0 +1,114 @@
+---
+name: Test variables
+description: define test variables
+
+variables:
+  jwt_secret_key: "{tavern.env_vars.jwt_secret_token}"
+
+  events:
+    - event_name: 'test event 1'
+      event_genre_id: 1
+      venue_id: 1
+      timeslot_ids:
+        - 7
+        - 8
+      price: 1000
+      start_at: '2020-01-11T00:00:00Z'
+      end_at: '2020-01-11T23:59:59Z'
+    - event_name: 'test event 2'
+      event_genre_id: 1
+      venue_id: 1
+      timeslot_ids:
+        - 3
+      price: 1000
+      start_at: '2020-10-01T12:00:00Z'
+      end_at: '2020-10-01T23:59:59Z'
+    - event_name: "JST timezone event"
+      event_genre_id: 12
+      venue_id: 3
+      timeslot_ids:
+        - 407
+      price: 1000
+      start_at: '2020-01-11T09:00:00+09:00'
+      end_at: '2020-01-11T20:00:00+09:00'
+
+  venues:
+    - id: 1
+      name: "venues01"
+      capacity: 400
+    - id: 3
+      name: "武道館"
+      capacity: 14471
+  timeslots:
+    - id: 4
+      venue_id: 1
+      start_at: "2020-10-01T12:00:00Z"
+      end_at: "2020-10-01T23:59:59Z"
+      created_at: "2020-07-01T00:00:00Z"
+      updated_at: "2020-07-01T00:00:00Z"
+    - id: 5
+      venue_id: 1
+      start_at: "2020-10-02T00:00:00Z"
+      end_at: "2020-10-02T11:59:59Z"
+      created_at: "2020-07-01T00:00:00Z"
+      updated_at: "2020-07-01T00:00:00Z"
+    - id: 6
+      venue_id: 1
+      event_id: 4
+      start_at: "2021-12-31T12:00:00Z"
+      end_at: "2021-12-31T23:59:59Z"
+      created_at: "2020-10-01T00:00:00Z"
+      updated_at: "2020-10-01T00:00:00Z"
+
+  reserved_timeslot:
+    id: 24203
+    venue_id: 121
+    event_id: 8
+    start_at: "2021-03-01T00:00:00Z"
+    end_at: "2021-03-01T11:59:59Z"
+    created_at: "2020-04-12T16:28:06Z"
+    updated_at: "2020-04-12T16:28:06Z"
+
+  create_event:
+    event_name: 'test event 1'
+    event_genre_id: 1
+    venue_id: 1
+    timeslot_ids:
+      - 13
+      - 14
+    price: 1000
+    start_at: '2020-02-02T00:00:00Z'
+    end_at: '2020-02-02T23:59:59Z'
+
+  update_event:
+    id: 1
+    event_name: "updated event"
+    event_genre_id: 2
+    timeslot_ids: [14]
+    price: 10000
+    start_at: '2020-02-02T13:00:00Z'
+    end_at: '2020-02-02T20:00:00Z'
+    current_resv: 0
+
+  resv_event:
+    id: 22
+
+  other_artist_event:
+    id: 5
+
+  get_resv:
+    id: 15989
+    user_id: 1
+    event_id: 108
+    num_of_resv: 4
+    created_at: "2019-12-02T20:40:32Z"
+
+  new_audience:
+    username: "audience201"
+    password: "password"
+    role: "audience"
+
+  new_artist:
+    username: "artist201"
+    password: "password"
+    role: "artist"

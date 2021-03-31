@@ -1,0 +1,4 @@
+---
+- name: set timezone to JST
+  timezone:
+    name: 'Asia/Tokyo'

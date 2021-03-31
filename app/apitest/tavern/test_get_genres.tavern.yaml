@@ -1,0 +1,67 @@
+---
+test_name: Get genres Success Testcase
+
+includes:
+  - !include auth_stage.yaml
+
+stages:
+  - type: ref
+    id: login_get_token_of_artist
+  - name: Success to get genres by artist
+    request:
+      url: "{tavern.env_vars.url}/genres"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+      json: !include "response/get_eventgenres.json"
+
+  - type: ref
+    id: login_get_token_of_owner
+  - name: Success to get genres by owner
+    request:
+      url: "{tavern.env_vars.url}/genres"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+      json: !include "response/get_eventgenres.json"
+
+---
+test_name: Get genres return 401
+stages:
+  - name: Return 401 when No Login
+    request:
+      url: "{tavern.env_vars.url}/genres"
+      method: GET
+    response:
+      status_code: 401
+
+---
+test_name: Get genres return 403
+
+includes:
+  - !include auth_stage.yaml
+
+stages:
+  - type: ref
+    id: login_get_token
+
+  - name: Return 403 when audience request to get genres
+    request:
+      url: "{tavern.env_vars.url}/genres"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 403
+

@@ -1,0 +1,14 @@
+[Unit]
+Description={{ app.name }} app by {{ item.name }}
+After=mysql.service
+
+[Service]
+User={{ player_name }}
+Type=simple
+MemoryLimit=700M
+EnvironmentFile=/home/{{ player_name }}/.env
+WorkingDirectory={{app_dir}}/{{ item.name }}
+ExecStart={{ item.command }}
+
+[Install]
+WantedBy=multi-user.target

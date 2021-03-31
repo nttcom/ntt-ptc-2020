@@ -1,0 +1,14 @@
+---
+name: Initialize stage
+description:
+  Reusable test stage for initialize
+
+stages:
+  - id: initialize_db
+    name: Initialize Database
+    request:
+      url: "{tavern.env_vars.url:s}/initialize"
+      method: POST
+    response:
+      status_code: 200
+    delay_after: 1

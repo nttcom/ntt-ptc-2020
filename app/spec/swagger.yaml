@@ -1,0 +1,1432 @@
+openapi: 3.0.0
+info:
+  description: "This is an API document for a ticket reservation system."
+  version: 0.1.2
+  title: Ticket system
+tags:
+  # 機能ごとのグルーピング
+  - name: users
+    description: ユーザの操作
+  - name: events
+    description: イベントの操作
+  - name: eventgenres
+    description: イベントジャンルの操作
+  - name: reservations
+    description: イベント参加予約の操作
+  - name: venues
+    description: 会場の操作
+  - name: other
+    description: その他
+paths:
+  /api/genres:
+    get:
+      security:
+        - bearerAuth:
+            - artist
+            - owner
+      tags:
+        - eventgenres
+      summary: List event genres
+      description: イベントジャンルの取得
+      operationId: ListEventGenres
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventGenreList"
+        "401":
+          $ref: "#/components/responses/401General"
+        '403':
+          $ref: "#/components/responses/403atListEventGenres"
+        '500':
+          $ref: "#/components/responses/500General"
+  /api/login:
+    post:
+      tags:
+        - users
+      summary: User login
+      description: "ユーザのログイン (jwt の生成)"
+      operationId: LogIn
+      requestBody:
+        $ref: "#/components/requestBodies/Login"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JwtAndUserId"
+        "400":
+          $ref: "#/components/responses/400atLogIn"
+        "401":
+          $ref: "#/components/responses/401atLogIn"
+        "500":
+          $ref: "#/components/responses/500General"
+  /api/logout:
+    post:
+      security:
+        - bearerAuth:
+            - audience
+            - artist
+            - owner
+      tags:
+        - users
+      summary: User logout
+      description: "ユーザのログアウト (jwt の revoke)"
+      operationId: LogOut
+      responses:
+        "200":
+          description: Logout successful
+        "401":
+          $ref: "#/components/responses/401General"
+        "500":
+          $ref: "#/components/responses/500General"
+  /api/users:
+    post:
+      tags:
+        - users
+      summary: User signup
+      description: "ユーザのサインアップ (username/password を DB Insert)"
+      operationId: SignUp
+      requestBody:
+        $ref: "#/components/requestBodies/Signup"
+      responses:
+        "201":
+          description: Create successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          $ref: "#/components/responses/400atSignUp"
+        "409":
+          $ref: "#/components/responses/409atSignUp"
+        "500":
+          $ref: "#/components/responses/500General"
+  /api/users/{user_id}:
+    get:
+      security:
+        - bearerAuth:
+            - audience
+            - artist
+            - owner
+      tags:
+        - users
+      summary: Get user info
+      description: "ユーザ情報を取得"
+      operationId: GetUser
+      parameters:
+        - in: path
+          name: user_id
+          schema:
+            type: integer
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          $ref: "#/components/responses/400atGetUser"
+        "401":
+          $ref: "#/components/responses/401General"
+        "403":
+          $ref: "#/components/responses/403atGetUser"
+        "404":
+          $ref: "#/components/responses/404General"
+        "500":
+          $ref: "#/components/responses/500General"
+  /api/users/{user_id}/reservations:
+    get:
+      security:
+        - bearerAuth:
+            - audience
+            - owner
+      tags:
+        - reservations
+      summary: List reservations of specific users
+      description: イベントの予約状況 (どのイベントにどんなユーザが予約しているか) を取得
+      operationId: ListReservationsOfUsers
+      parameters: # query-param 未指定の場合、予約全件を取得 (for owner Role)
+        - in: path
+          name: user_id
+          schema:
+            type: integer
+          required: true
+        - in: query
+          name: limit
+          description: 最大何件取得するかを指定
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 5
+        - in: query
+          name: offset
+          description: 何番目から取得するかを指定
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReservationList"
+        "400":
+          $ref: "#/components/responses/400atListReservations"
+        "401":
+          $ref: "#/components/responses/401General"
+        "403":
+          $ref: "#/components/responses/403atListReservationsOfUsers"
+        "404":
+          $ref: "#/components/responses/404General"
+        "500":
+          $ref: "#/components/responses/500General"
+  /api/reservations/{reservation_id}:
+    get:
+      security:
+        - bearerAuth:
+            - audience
+            - owner
+      tags:
+        - reservations
+      summary: Get reservation
+      description: 予約詳細を取得
+      operationId: GetReservation
+      parameters:
+        - in: path
+          name: reservation_id
+          schema:
+            type: integer
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Reservation"
+        "400":
+          $ref: "#/components/responses/400atGetReservation"
+        "401":
+          $ref: "#/components/responses/401General"
+        "403":
+          $ref: "#/components/responses/403atGetReservation"
+        "404":
+          $ref: "#/components/responses/404General"
+        "500":
+          $ref: "#/components/responses/500General"
+    delete:
+      security:
+        - bearerAuth:
+            - audience
+            - owner
+      tags:
+        - reservations
+      summary: Cancel a reservation
+      description: イベント参加予約のキャンセル
+      operationId: DeleteReservation
+      parameters:
+        - in: path
+          name: reservation_id
+          schema:
+            type: integer
+          required: true
+      responses:
+        "204":
+          description: Deleted successfully
+        "400":
+          $ref: "#/components/responses/400atDeleteReservation"
+        "401":
+          $ref: "#/components/responses/401General"
+        "403":
+          $ref: "#/components/responses/403atDeleteReservation"
+        "404":
+          $ref: "#/components/responses/404General"
+        "500":
+          $ref: "#/components/responses/500General"
+  /api/events:
+    get:
+      tags:
+        - events
+      summary: List all events
+      description: "公開されている開催予定のイベント一覧を取得"
+      operationId: ListEvents
+      parameters:
+        # イベントを公開したユーザで絞り込み
+        - in: query
+          name: user_id
+          description: 公演者 (artist) のユーザID。指定しないとき、全公演を返す。
+          required: false
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          description: 最大何件取得するかを指定
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 12
+        - in: query
+          name: offset
+          description: 何番目から取得するかを指定
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventList"
+        "400":
+          $ref: "#/components/responses/400atListEvents"
+        "500":
+          $ref: "#/components/responses/500General"
+    post:
+      security:
+        - bearerAuth:
+            - artist
+      tags:
+        - events
+      summary: Create event
+      description: "イベントを作成"
+      operationId: CreateEvent
+      requestBody:
+        $ref: "#/components/requestBodies/Event"
+      responses:
+        "201":
+          description: Create successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        "400":
+          $ref: "#/components/responses/400atCreateEvent"
+        "401":
+          $ref: "#/components/responses/401General"
+        "403":
+          $ref: "#/components/responses/403atCreateEvent"
+        "409":
+          $ref: "#/components/responses/409atCreateEvent"
+        "500":
+          $ref: "#/components/responses/500General"
+  /api/events/{event_id}:
+    get:
+      tags:
+        - events
+      summary: Get event
+      description: "特定のイベントを取得"
+      operationId: GetEvent
+      parameters:
+        - in: path
+          name: event_id
+          schema:
+            type: integer
+          required: true
+      responses:
+        "200":
+          description: Retrieval successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        "400":
+          $ref: "#/components/responses/400atGetEvent"
+        "404":
+          $ref: "#/components/responses/404General"
+        "500":
+          $ref: "#/components/responses/500General"
+    put:
+      security:
+        - bearerAuth:
+            - artist
+            - owner
+      tags:
+        - events
+      summary: Update event
+      description: "特定のイベントを更新"
+      operationId: UpdateEvent
+      parameters:
+        - in: path
+          name: event_id
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        $ref: "#/components/requestBodies/Event"
+      responses:
+        "200":
+          description: Update successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        "400":
+          $ref: "#/components/responses/400atUpdateEvent"
+        "401":
+          $ref: "#/components/responses/401General"
+        "403":
+          $ref: "#/components/responses/403atUpdateEvent"
+        "404":
+          $ref: "#/components/responses/404General"
+        "409":
+          $ref: "#/components/responses/409atUpdateEvent"
+        "500":
+          $ref: "#/components/responses/500General"
+  /api/events/{event_id}/reservations:
+    get:
+      security:
+        - bearerAuth:
+            - artist
+            - owner
+      tags:
+        - reservations
+      summary: List reservations of specific events
+      description: イベントの予約状況 (どのイベントにどんなユーザが予約しているか) を取得
+      operationId: ListReservationsOfEvents
+      parameters:
+        - in: path
+          name: event_id
+          schema:
+            type: integer
+          required: true
+        - in: query
+          name: limit
+          description: 最大何件取得するかを指定
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 10
+        - in: query
+          name: offset
+          description: 何番目から取得するかを指定
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReservationList"
+        "400":
+          $ref: "#/components/responses/400atListReservations"
+        "401":
+          $ref: "#/components/responses/401General"
+        "403":
+          $ref: "#/components/responses/403atListReservations"
+        "404":
+          $ref: "#/components/responses/404General"
+        "500":
+          $ref: "#/components/responses/500General"
+    post:
+      security:
+        - bearerAuth:
+            - audience
+      tags:
+        - reservations
+      summary: Reserve tickets of an event
+      description: "イベントの参加予約"
+      operationId: ReserveEvent
+      parameters:
+        - in: path
+          name: event_id
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        $ref: "#/components/requestBodies/Reservation"
+      responses:
+        "201":
+          description: Reservation successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Reservation"
+        "400":
+          $ref: "#/components/responses/400atReserveEvent"
+        "401":
+          $ref: "#/components/responses/401General"
+        "403":
+          $ref: "#/components/responses/403atReserveEvent"
+        "404":
+          $ref: "#/components/responses/404General"
+        "409":
+          $ref: "#/components/responses/409atReserveEvent"
+        "500":
+          $ref: "#/components/responses/500General"
+  /api/events/{event_id}/image:
+    get:
+      tags:
+        - events
+      summary: Get event image
+      description: "特定のイベントの画像を取得"
+      operationId: GetEventImage
+      parameters:
+        - in: path
+          name: event_id
+          schema:
+            type: integer
+          required: true
+      responses:
+        "200":
+          description: Retrieval successful
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+                description: If event doesn't have its image, returns 200 with default image.
+        "400":
+          $ref: "#/components/responses/400atGetEventImage"
+        "404":
+          $ref: "#/components/responses/404atGetEventImage"
+        "500":
+          $ref: "#/components/responses/500General"
+    put:
+      security:
+        - bearerAuth:
+            - artist
+            - owner
+      tags:
+        - events
+      summary: Put event image
+      description: "特定のイベントの画像を新規登録/更新"
+      operationId: PutEventImage
+      parameters:
+        - in: path
+          name: event_id
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+      responses:
+        "204":
+          description: Update successful
+          content:
+            application/json:
+              schema: {}
+        "400":
+          $ref: "#/components/responses/400atPutEventImage"
+        "401":
+          $ref: "#/components/responses/401General"
+        "403":
+          $ref: "#/components/responses/403atPutEventImage"
+        "404":
+          $ref: "#/components/responses/404General"
+        "500":
+          $ref: "#/components/responses/500General"
+  /api/venues:
+    get:
+      security:
+        - bearerAuth:
+            - audience
+            - artist
+            - owner
+      tags:
+        - venues
+      summary: List venues
+      description: "会場一覧を取得"
+      operationId: ListVenues
+      parameters:
+        - in: query
+          name: limit
+          description: 最大何件取得するかを指定
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 5
+        - in: query
+          name: offset
+          description: 何番目から取得するかを指定
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VenueList"
+        "400":
+          $ref: "#/components/responses/400atListVenues"
+        "401":
+          $ref: "#/components/responses/401General"
+        "500":
+          $ref: "#/components/responses/500General"
+    # 優先度②なのでコメントアウト
+    # post:
+    #   security:
+    #     - bearerAuth:
+    #         - owner
+    #   tags:
+    #     - venues
+    #     - owner
+    #   summary: Reserve venue
+    #   description: "利用可能な会場情報を登録"
+    #   operationId: CreateVenue
+    #   requestBody:
+    #     $ref: "#/components/requestBodies/Venue"
+    #   responses:
+    #     "201":
+    #       description: Created
+    #     "400":
+    #       description: Invalid input
+    #     "401":
+    #       description: Invalid credentials
+    #     "403":
+    #       description: if not (role == "owner")
+    #     "409":
+    #       description: 重複エラー (既に登録済みの会場を予約しようとした場合)
+    #     "500":
+    #       description: Internal Server Error
+  /api/venues/{venue_id}/timeslots:
+    get:
+      security:
+        - bearerAuth:
+            - artist
+            - owner
+      tags:
+        - venues
+      summary: List timeslots of venue
+      description: "ある会場の、空き時間枠の一覧を取得（過去の枠も返す）"
+      operationId: ListVenueTimeslots
+      parameters:
+        - in: path
+          name: venue_id
+          schema:
+            type: integer
+          required: true
+        - in: query
+          name: from
+          description: |
+            指定されたdatetime (rfc3339準拠) 以降を全件取得 (event.start_at と比較)。
+            どのタイムゾーン識別子が指定されても処理できるようにする。タイムゾーンが指定されない場合はUTCと仮定する。
+          required: false
+          schema:
+            type: string
+            format: date-time
+            example: "2020-07-21T07:18:20Z"
+            default: "now()"
+        - in: query
+          name: to
+          description: |
+            指定されたdatetime (rfc3339準拠) 以前を全件取得 (event.start_at と比較)。
+            どのタイムゾーン識別子が指定されても処理できるようにする。タイムゾーンが指定されない場合はUTCと仮定する。
+          required: false
+          schema:
+            type: string
+            format: date-time
+            example: "2020-07-31T23:59:59Z"
+            default: "end_of_this_month()"
+      responses:
+        "200":
+          description: OK (even if all timeslots are gone)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TimeslotList"
+        "400":
+          $ref: "#/components/responses/400atListVenueTimeslots"
+        "401":
+          $ref: "#/components/responses/401General"
+        "403":
+          $ref: "#/components/responses/403atListVenueTimeslots"
+        "404":
+          $ref: "#/components/responses/404General"
+        "500":
+          $ref: "#/components/responses/500General"
+  /api/initialize:
+    post:
+      tags:
+        - other
+      summary: Initialize Database data
+      description: アプリケーションのデータ初期化および販促実施。
+      operationId: InitializeDatabase
+      responses:
+        "200":
+          description: OK
+          content:
+            plain/text:
+              schema:
+                type: string
+                description: |
+                  リクエストするレベル（1, 2, 3のいずれかの数値）。
+                  競技者自身がバックエンドを改修してこのいずれかを返すよう実装する。
+
+                  1は販促なし、2は販促あり、3は大規模販促ありを意味する。
+                  ベンチマーク時に、アプリケーションに到来するリクエスト量に影響がある（1が最も軽く、3が最も重い）。
+                  1, 2, 3いずれでもない値を返した場合、あるいは何も返さなかった場合、1が指定されたものとして扱われる。
+              example: "3"
+
+
+servers:
+  - url: http://127.0.0.1/
+components:
+  securitySchemes:
+    bearerAuth: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT # optional, arbitrary value for documentation purposes
+  requestBodies:
+    Login:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+              password:
+                type: string
+            required:
+              - username
+              - password
+    Signup:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+              password:
+                type: string
+              role:
+                type: string
+                description: "`artist` または `audience` のみ認容。"
+            required:
+              - username
+              - password
+              - role
+    Event:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              event_name:
+                type: string
+              event_genre_id:
+                type: integer
+              timeslot_ids:
+                type: array
+                description: |
+                  The venue_id of selected timeslots must be same.
+                  If the same timeslot is specified more than once, 400 will be returned.
+                items:
+                  type: integer
+                minItems: 1
+                maxItems: 2
+                uniqueItems: true
+              price:
+                type: integer
+                minimum: 1
+              start_at:
+                type: string
+                format: date-time
+                example: "2020-12-01T18:00:00Z"
+              end_at:
+                type: string
+                format: date-time
+                example: "2020-12-01T22:00:00Z"
+                minimum: "{start_at}"
+            required:
+              - event_name
+              - event_genre_id
+              - venue_id
+              - timeslot_ids
+              - price
+              - start_at
+              - end_at
+    Reservation:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              num_of_resv:
+                type: integer
+                example: 2
+                minimum: 1
+            required:
+              - num_of_resv
+    Venue:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              capacity:
+                type: integer
+            required:
+              - name
+              - capacity
+
+  responses:
+    400atCreateEvent:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error400Post"
+    400atUpdateEvent:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error400Post"
+    400atDeleteReservation:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error400General"
+    400atListEvents:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error400General"
+    400atListReservations:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error400General"
+    400atListVenues:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error400General"
+    400atListVenueTimeslots:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error400General"
+    400atGetEvent:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error400General"
+    400atGetEventImage:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error400General"
+    400atGetReservation:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error400General"
+    400atGetUser:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error400General"
+    400atLogIn:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: |
+                  Conditions and response messages:
+                  - Username and/or password is not provided.
+                    - Both of username and password are required.
+                example:
+                  Both of username and password are required.
+    400atPutEventImage:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error400PostSingleParameter"
+    400atReserveEvent:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error400Post"
+    400atSignUp:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: |
+                  Conditions and response messages:
+                  - One or more of the mandatory parameter is not provided.
+                    - Mandatory parameter(s) are missing.
+                  - `role` is not audience or artist.
+                    - Role is invalid. Choose from 'audience' or 'artist'.
+                example: Mandatory parameter(s) are missing.
+    401General:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: |
+                  Conditions and response messages:
+                  - Token is invalid or not provided.
+                    - Invalid credentials.
+                example: Invalid credentials.
+    401atLogIn:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: |
+                  Conditions and response messages:
+                  - Username and/or password is wrong.
+                    - Invalid credentials.
+                example: Invalid credentials.
+    403atCreateEvent:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error403ArtistOnly"
+    403atDeleteReservation:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: |
+                  Conditions and response messages:
+                  - `reservation_id.user_id` is not own.
+                    - Access declined.
+                  - Role is not owner.
+                    - Access declined.
+                example: Access declined.
+    403atGetReservation:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error403UserReservation"
+    403atGetUser:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: |
+                  Conditions and response messages:
+                  - User's role is audience and `user_id` is not own.
+                    - Access declined.
+                  - User's role is artist and `user_id` is not own.
+                    - Access declined.
+                example: Access declined.
+    403atListEventGenres:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: |
+                  Conditions and response messages:
+                  - User's role is not artist or owner.
+                    - Access declined.
+                example: Access declined.
+    403atListReservations:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error403Reservation"
+    403atListReservationsOfUsers:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error403UserReservation"
+    403atListVenueTimeslots:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error403ArtistOnly"
+    403atReserveEvent:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: |
+                  Conditions and response messages:
+                  - User's role is not audience or owner.
+                    - Access declined.
+                example: Access declined.
+    403atUpdateEvent:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error403Event"
+    403atPutEventImage:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error403Event"
+    404atGetEventImage:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: |
+                  Conditions and response messages:
+                  - An event specified by `event_id` doesn't exist.
+                    - Requested resource is not found.
+
+                  Attention: Event specified by `event_id` exists but related image is not uploaded,
+                  the app must return 200 and the default image.
+                example: Requested resource is not found.
+    404General:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: |
+                  General 404 error. Response is fixed as `Requested resource is not found.`.
+                example: Requested resource is not found.
+    409atCreateEvent:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error409EventDuplicated"
+    409atReserveEvent:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: |
+                  Conditions and response messages:
+                  - Tickets are all gone (sold out).
+                    - Tickets are all gone.
+                  - The user has already reserved ticket(s) of this event.
+                    - You've already reserved this event. To change the content, cancel and reserve it again.
+                example: Tickets are all gone.
+    409atSignUp:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: |
+                  Conditions and response messages:
+                  - A user who has same `username` is already on the database.
+                    - A user who has same username exists. Consider using different username.
+                example: A user who has same username exists. Consider using different username.
+    409atUpdateEvent:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error409EventDuplicated"
+    500General:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: |
+                  If a server catches any untracked exception, raise this with the value `Internal server error.`.
+                example: Internal server error.
+
+  schemas:
+    Error400General:
+      type: object
+      properties:
+        message:
+          type: string
+          description: |
+            Conditions and response messages:
+            - One or more parameter types don't match the spec.
+              - Type mismatch(es) exist.
+          example: Type mismatch(es) exist.
+    Error400Post:
+      type: object
+      properties:
+        message:
+          type: string
+          description: |
+            Conditions and response messages:
+            - One or more of the mandatory parameters are not provided.
+              - Mandatory parameter(s) are missing.
+            - One or more parameter types don't match the spec.
+              - Type mismatch(es) exist.
+            - There are violation(s) of restriction written in the spec.
+              - Restriction violation(s) occur.
+            - One or more resources specified in the request body are not available or gone.
+              - Specified resource(s) are unavailable.
+          example: Mandatory parameter(s) are missing.
+    Error400PostSingleParameter:
+      type: object
+      properties:
+        message:
+          type: string
+          description: |
+            Conditions and response messages:
+            - One or more of the mandatory parameters are not provided.
+              - Mandatory parameter(s) are missing.
+            - One or more parameter types don't match the spec.
+              - Type mismatch(es) exist.
+          example: Mandatory parameter(s) are missing.
+    Error403ArtistOnly:
+      type: object
+      properties:
+        message:
+          type: string
+          description: |
+            Conditions and response messages:
+            - User's role is not artist.
+              - Access declined.
+          example: Access declined.
+    Error403Event:
+      type: object
+      properties:
+        message:
+          type: string
+          description: |
+            Conditions and response messages:
+            - User's role is not artist or owner.
+              - Access declined.
+            - User's role is artist but a user who makes the request doesn't match an event owner.
+              - Access declined.
+          example: Access declined.
+    Error403Reservation:
+      type: object
+      properties:
+        message:
+          type: string
+          description: |
+            Conditions and response messages:
+            - User's role is audience and `user_id` is not own.
+              - Access declined.
+            - User's role is artist and `event_id` is not own.
+              - Access declined.
+            - User's role is not none of them: audience, artist or owner.
+              - Access declined.
+          example: Access declined.
+    Error403UserReservation:
+      type: object
+      properties:
+        message:
+          type: string
+          description: |
+            Conditions and response messages:
+            - User's role is audience and `user_id` is not own.
+              - Access declined.
+            - User's role is not none of them: audience or owner.
+              - Access declined.
+          example: Access declined.
+    Error409EventDuplicated:
+      type: object
+      properties:
+        message:
+          type: string
+          description: |
+            Conditions and response messages:
+            - Selected timeslots are already kept by another event.
+              - Selected timeslots are already reserved.
+          example: Selected timeslots are already reserved.
+    JwtAndUserId:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        access_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlF1ZWVuIiwiaXNfYXJ0aXN0Ijp0cnVlfQ.lurfq9WJC4DEdMh6NxIVp5zZwHd5h643SjT00EyEdnQ"
+    # JWT Payload の内容 (OpenAPI では参照されないため warning が発生するかも)
+    JwtPayload:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "Queen"
+        role:
+          type: string
+          example: "artist"
+        iat:
+          type: integer
+          format: int64
+          description: Issued At (Unix Epoch Time)
+          example: 1598431133
+        exp:
+          type: integer
+          format: int64
+          description: Expiration Time (Unix Epoch Time)
+          example: 1598434733
+    User:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        username:
+          type: string
+        role:
+          type: string
+    Event:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1234
+          description: event_id
+        event_name:
+          type: string
+          example: xxx festa
+        event_genre_id:
+          type: integer
+          example: 0
+        artist_id:
+          type: integer
+          example: 1234
+        artist_name:
+          type: string
+        venue_id:
+          type: integer
+          example: 12
+        timeslot_ids:
+          type: array
+          items:
+            type: integer
+        venue_name:
+          type: string
+        price:
+          type: integer
+          example: 5000
+        start_at:
+          type: string
+          format: date-time
+          example: "2020-12-01T18:00:00Z"
+        end_at:
+          type: string
+          format: date-time
+          example: "2020-12-01T22:00:00Z"
+        # 優先度②のためコメントアウト
+        #expose_at:
+        #  type: string
+        #  format: date-time
+        #  example: "2020-10-01T00:00:00"
+        created_at:
+          type: string
+          format: date-time
+          example: "2020-07-21T07:18:20Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2020-08-23T11:00:25Z"
+        # 優先度②のためコメントアウト
+        #event_status:
+        #  type: string
+        #  example: waiting
+        # 優先度②のためコメントアウト
+        #is_public:
+        #  type: boolean
+        #  example: true
+        capacity:
+          type: integer
+          example: 300
+        current_resv:
+          type: integer
+          example: 190
+    EventList:
+      type: array
+      items:
+        $ref: "#/components/schemas/Event"
+    EventGenre:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+    EventGenreList:
+      type: array
+      items:
+        $ref: "#/components/schemas/EventGenre"
+    Reservation:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: reservation_id
+          example: 1234
+        user_id:
+          type: integer
+          example: 1
+        username:
+          type: string
+          example: "hoge"
+        event_id:
+          type: integer
+          example: 1
+        event_name:
+          type: string
+          example: "第10回 みんなで掘削！チキチキボーリング大会 in 東京"
+        event_price:
+          type: integer
+          example: 5000
+        event_start_at:
+          type: string
+          format: date-time
+          example: "2020-07-21T07:18:20Z"
+        event_end_at:
+          type: string
+          format: date-time
+          example: "2020-07-21T07:18:20Z"
+        venue_name:
+          type: string
+          example: "大手町プレイス32F"
+        num_of_resv:
+          type: integer
+          example: 2
+        # 優先度②のためコメントアウト
+        # status:
+        #   type: string
+        #   example: "waiting"
+        created_at:
+          type: string
+          format: date-time
+          example: "2020-07-21T07:18:20Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2020-08-23T11:00:25Z"
+    ReservationList:
+      type: array
+      items:
+        $ref: "#/components/schemas/Reservation"
+    Venue:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        capacity:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+          example: "2020-07-21T07:18:20Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2020-08-23T11:00:25Z"
+    VenueList:
+      type: array
+      items:
+        $ref: "#/components/schemas/Venue"
+    Timeslot:
+      type: object
+      properties:
+        id:
+          type: integer
+        start_at:
+          type: string
+          format: date-time
+          example: "2020-07-01T15:00:00Z"
+        end_at:
+          type: string
+          format: date-time
+          example: "2020-07-02T02:59:59Z"
+        created_at:
+          type: string
+          format: date-time
+          example: "2020-07-21T07:18:20Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2020-08-23T11:00:25Z"
+    TimeslotList:
+      type: array
+      items:
+        $ref: "#/components/schemas/Timeslot"

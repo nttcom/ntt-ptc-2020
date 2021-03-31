@@ -1,0 +1,9 @@
+---
+- name: 'set up specific conf'
+  include: setup.yml
+
+- name: 'install middleware'
+  include: install.yml
+
+- name: 'put benchmark'
+  include: deploy.yml

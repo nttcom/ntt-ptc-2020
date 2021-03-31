@@ -1,0 +1,86 @@
+---
+- name: 'install pymysql for setting up mysql'
+  pip:
+    name: PyMySQL
+    executable: pip3
+    state: present
+
+- name: 'set mysql root password'
+  debconf:
+    name: mysql-server
+    question: 'mysql-server/root_password'
+    value: '{{ db.root_password }}'
+    vtype: password
+
+- name: 'confirm mysql root password'
+  debconf:
+    name: mysql-server
+    question: 'mysql-server/root_password_again'
+    value: '{{ db.root_password }}'
+    vtype: password
+
+- name: 'install mysqld'
+  apt:
+    name: '{{ packages }}'
+    state: present
+  vars:
+    packages:
+      - mysql-server
+      - libmysqld-dev
+      - mysql-client
+      - python-mysql.connector
+      - python-mysqldb
+      - python-pymysql
+      - python3-mysql.connector
+      - python3-mysqldb
+      - python3-pymysql
+
+- name: Configure mysqld charset
+  ini_file:
+    path: /etc/mysql/mysql.conf.d/mysqld.cnf
+    section: mysqld
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+    - { option: "character-set-server", value: "utf8mb4" }
+    - { option: "collation-server", value: "utf8mb4_bin" }
+    - { option: "innodb_buffer_pool_size", value: "700M"}
+
+- name: Configure mysql client charset
+  ini_file:
+    path: /etc/mysql/conf.d/mysql.cnf
+    section: client
+    option: default-character-set
+    value: utf8mb4
+
+- name: 'enable mysql-server service'
+  service:
+    name: mysql
+    state: restarted
+    enabled: true
+
+- name: 'drop database'
+  mysql_db:
+    name: '{{ db.name }}'
+    state: absent
+    login_user: root
+    login_password: '{{ db.root_password }}'
+  ignore_errors: true
+
+- name: 'create database'
+  mysql_db:
+    name: '{{ db.name }}'
+    state: present
+    login_user: root
+    login_password: '{{ db.root_password }}'
+  ignore_errors: true
+
+- name: 'create mysql user'
+  mysql_user:
+    name: '{{ db.username }}'
+    password: '{{ db.password }}'
+    priv: '*.*:ALL,GRANT'
+    state: present
+    login_user: root
+    login_password: '{{ db.root_password }}'
+  ignore_errors: true

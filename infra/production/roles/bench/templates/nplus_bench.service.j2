@@ -1,0 +1,14 @@
+[Unit]
+Description=Nplus Benchmark
+After=network.target
+
+[Service]
+User={{ admin_name }}
+Type=simple
+EnvironmentFile={{ bench_dir }}/.env
+WorkingDirectory={{ bench_dir }}
+ExecStart={{ bench_dir }}/bench_loop.sh
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

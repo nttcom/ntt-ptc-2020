@@ -1,0 +1,1 @@
+`PUT /api/events/:event_id/image` に当ファイルを投げつけて400が返ることのテストをする用

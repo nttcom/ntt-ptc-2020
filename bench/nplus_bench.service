@@ -1,0 +1,15 @@
+# Reference use only. This file is not used in production.
+# See infra/production/roles/bench/tasks/deploy.yml
+[Unit]
+Description=Nplus Benchmark
+After=network.target
+
+[Service]
+User=ptc_admin
+Type=simple
+EnvironmentFile=/home/ptc_admin/.env
+WorkingDirectory=/home/ptc_admin/n-isucon-2019/bench/scenario
+ExecStart=/home/ptc_admin/n-isucon-2019/bench/scenario/bench_loop.sh
+
+[Install]
+WantedBy=multi-user.target

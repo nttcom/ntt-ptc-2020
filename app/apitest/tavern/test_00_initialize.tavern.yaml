@@ -1,0 +1,11 @@
+---
+test_name: Initialize Success Testcase
+stages:
+  - name: Initialize Success
+    request:
+      url: "{tavern.env_vars.url}/initialize"
+      method: POST
+      timeout: 20
+    response:
+      status_code: 200
+    delay_after: 5

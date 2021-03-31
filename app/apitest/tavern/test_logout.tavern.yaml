@@ -1,0 +1,55 @@
+---
+test_name: Logout Success Testcase
+
+includes:
+  - !include auth_stage.yaml
+
+stages:
+  - type: ref
+    id: login_get_token
+  - name: Logout Success
+    request:
+      url: "{tavern.env_vars.url}/logout"
+      method: POST
+      headers:
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+
+---
+test_name: Return 401 when Logout
+
+includes:
+  - !include auth_stage.yaml
+
+stages:
+  - type: ref
+    id: login_get_token_of_artist
+  - name: Logout Success
+    request:
+      url: "{tavern.env_vars.url}/logout"
+      method: POST
+      headers:
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+    delay_before: 1 # 入れないとここが200ではなく401になる
+  - name: Return 401 when get user info
+    request:
+      url: "{tavern.env_vars.url}/users/3"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 401
+
+---
+test_name: Logout return 401
+stages:
+  - name: Return 401 when No Login
+    request:
+      url: "{tavern.env_vars.url}/logout"
+      method: POST
+    response:
+      status_code: 401

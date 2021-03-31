@@ -1,0 +1,41 @@
+---
+- name: create common dir
+  file:
+    path: '{{ app_dir }}/common'
+    owner: '{{ player_name }}'
+    group: '{{ group_name }}'
+    mode: '0755'
+    state: directory
+
+- name: 'copy db dir to app from repo'
+  copy:
+    remote_src: true
+    src: '{{ tmp_dir }}/app/db'
+    dest: '{{ app_dir }}/common'
+    owner: '{{ player_name }}'
+    group: '{{ group_name }}'
+    mode: '0755'
+
+- name: Kindness (exclude huge files)
+  copy:
+    src: home/ptc-user/app/.gitignore
+    dest: '{{ app_dir }}/.gitignore'
+    owner: '{{ player_name }}'
+    group: '{{ group_name }}'
+    mode: '0644'
+
+- name: 'put init script to app/common/db'
+  template:
+    src: init.sh.j2
+    dest: '{{ app_dir }}/common/db/init.sh'
+    owner: '{{ player_name }}'
+    group: '{{ group_name }}'
+    mode: '0755'
+
+- name: 'put force initialization script to app/common/db '
+  template:
+    src: initialize_all_db.sh.j2
+    dest: '{{ app_dir }}/common/db/initialize_all_db.sh'
+    owner: '{{ player_name }}'
+    group: '{{ group_name }}'
+    mode: '0755'

@@ -1,0 +1,16 @@
+---
+test_name: Fail to operation with expired token
+stages:
+  - name: Return 401 when request have a expired token
+    request:
+      url: "{tavern.env_vars.url}/genres"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {tavern.env_vars.expired_token:s}"
+    response:
+      status_code: 401
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr

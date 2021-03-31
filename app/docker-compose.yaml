@@ -1,0 +1,66 @@
+version: '3.3'
+services:
+  db:
+    build:
+      context: ./db/
+      dockerfile: Dockerfile
+    ports:
+      - "3306:3306" # for debugging port
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci --slow_query_log=true --slow_query_log_file=/var/log/mysql/mysqld-slow.log --long_query_time=0
+    restart: always
+
+  python-app:
+    build:
+      context: .
+      dockerfile: Dockerfile-python
+    image: pyapp
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./.env
+
+  ruby-app:
+    build:
+      context: .
+      dockerfile: Dockerfile-ruby
+    image: rbapp
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+
+  go-app:
+    build:
+      context: .
+      dockerfile: Dockerfile-go
+    image: goapp
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+
+  nodejs-app:
+    build:
+      context: .
+      dockerfile: Dockerfile-nodejs
+    image: jsapp
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+
+  apitest:
+    build:
+      context:  .
+      dockerfile: apitest/Dockerfile
+    image: api-test
+    depends_on:
+      - db
+    environment:
+      app: $app

@@ -1,0 +1,26 @@
+FROM ruby:2.7.1
+
+RUN apt-get update && apt-get install -y default-mysql-client
+
+ARG project_dir=/app/
+ARG app_dir=src/ruby
+
+WORKDIR $project_dir
+
+COPY common/init.sh $project_dir/scripts/init.sh
+COPY db/init.sql $project_dir/scripts/init.sql
+
+ADD $app_dir/Gemfile $project_dir
+ADD $app_dir/Gemfile.lock $project_dir
+RUN bundle install
+
+COPY $app_dir/app.rb $project_dir
+COPY $app_dir/config.ru $project_dir
+COPY $app_dir/endpoint.sh $project_dir
+COPY $app_dir/utils $project_dir/utils
+
+COPY $app_dir/public $project_dir/public
+
+CMD ["./endpoint.sh"]
+
+EXPOSE 5000

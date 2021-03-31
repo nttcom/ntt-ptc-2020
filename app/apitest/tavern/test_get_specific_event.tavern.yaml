@@ -1,0 +1,70 @@
+---
+test_name: Get event Success Testcase
+
+stages:
+  - name: Success to get event
+    request:
+      url: "{tavern.env_vars.url}/events/3"
+      method: GET
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+      json:
+        id: 3
+        event_name: !anystr
+        event_genre_id: !anyint
+        artist_id: 3
+        artist_name: "user03"
+        venue_id: !anyint
+        timeslot_ids: !anylist
+        venue_name: !anystr
+        price: !anyint
+        start_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+        end_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+        created_at: "2020-07-01T00:00:00Z"
+        updated_at: !re_fullmatch "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+        capacity: !anyint
+        current_resv: !anyint
+
+---
+test_name: Get specific event return 400
+
+stages:
+  - name: Return 400 when user requests invalid event id
+    request:
+      url: "{tavern.env_vars.url}/events/event_id"
+      method: GET
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+
+---
+test_name: Get specific event return 404
+
+stages:
+  - name: Return 404 when event id is negative
+    request:
+      url: "{tavern.env_vars.url}/events/-1"
+      method: GET
+    response:
+      status_code: 404
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+  - name: Return 404 when event doesn't exist
+    request:
+      url: "{tavern.env_vars.url}/events/999999"
+      method: GET
+    response:
+      status_code: 404
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr

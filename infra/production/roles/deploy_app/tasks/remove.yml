@@ -1,0 +1,41 @@
+---
+- name: 'remove download data'
+  file:
+    path: '{{ tmp_dir }}'
+    state: absent
+
+- name: 'remove endpoint.sh'
+  file:
+    path: '{{ app_dir }}/{{ item }}/endpoint.sh'
+    state: absent
+  with_items:
+    - ruby
+    - python
+    - js
+    - go
+    - apitest
+  ignore_errors: true
+
+- name: 'remove endpoint.sh'
+  file:
+    path: '{{ app_dir }}/{{ item }}/endpoint.sh'
+    state: absent
+  with_items:
+    - ruby
+    - python
+    - js
+    - go
+    - apitest
+  ignore_errors: true
+
+- name: 'remove unnecessary files'
+  file:
+    path: '{{ app_dir }}/{{ item }}'
+    state: absent
+  with_items:
+    - common/db/init.sql
+    - common/db/Dockerfile
+    - apitest/Dockerfile
+    - js/TokenRevocationList.dat
+    - python/requirements-devel.txt
+  ignore_errors: true

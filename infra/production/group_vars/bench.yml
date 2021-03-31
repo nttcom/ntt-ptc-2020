@@ -1,0 +1,12 @@
+---
+bench_dir: '/home/{{ admin_name }}/bench'
+
+db:
+  host: 10.202.160.3
+  name: dashboard
+  username: ptc_admin
+  password: brXPboP38jFnAfRK98dcVjcHT2reUfqRAi5XfHMrTjNgBzUR2h
+  root_password: qFZLHxhDKnnndpMXjrLYraEsfggS65FqWwbZQoQhFsrDiFomFJ
+
+redis:
+  host: 10.148.83.107

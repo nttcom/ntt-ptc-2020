@@ -1,0 +1,110 @@
+---
+test_name: Signup Success Testcase
+
+stages:
+  - name: Signup Success when role is audience
+    request:
+      url: "{tavern.env_vars.url:s}/users"
+      method: POST
+      headers:
+        content-type: application/json
+      json:
+        username: "{new_audience.username:s}"
+        password: "{new_audience.password:s}"
+        role: "{new_audience.role:s}"
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      json:
+        user_id: !anyint
+        username: "{new_audience.username:s}"
+        role: "{new_audience.role:s}"
+
+  - name: Signup Success when role is artist
+    request:
+      url: "{tavern.env_vars.url}/users"
+      method: POST
+      headers:
+        content-type: application/json
+      json:
+        username: "{new_artist.username:s}"
+        password: "{new_artist.password:s}"
+        role: "{new_artist.role:s}"
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      json:
+        user_id: !anyint
+        username: "{new_artist.username:s}"
+        role: "{new_artist.role:s}"
+
+---
+test_name: Signup return 400
+stages:
+  - name: Return 400 when No username
+    request:
+      url: "{tavern.env_vars.url}/users"
+      method: POST
+      headers:
+        content-type: application/json
+      json:
+        password: "{new_artist.password:s}"
+        role: "{new_artist.role:s}"
+    response:
+      status_code: 400
+
+  - name: Return 400 when No password
+    request:
+      url: "{tavern.env_vars.url}/users"
+      method: POST
+      headers:
+        content-type: application/json
+      json:
+        username: "{new_artist.username:s}"
+        role: "{new_artist.role:s}"
+    response:
+      status_code: 400
+
+  - name: Return 400 when a No role
+    request:
+      url: "{tavern.env_vars.url}/users"
+      method: POST
+      headers:
+        content-type: application/json
+      json:
+        username: "{new_artist.username:s}"
+        password: "{new_artist.password:s}"
+    response:
+      status_code: 400
+
+  - name: Return 400 when a wrong role
+    request:
+      url: "{tavern.env_vars.url}/users"
+      method: POST
+      headers:
+        content-type: application/json
+      json:
+        username: "{new_artist.username:s}"
+        password: "{new_artist.password:s}"
+        role: owner
+    response:
+      status_code: 400
+
+---
+test_name: Signup return 409 when username is duplicated
+stages:
+  - name: Return 409 when username is duplicated
+    request:
+      url: "{tavern.env_vars.url}/users"
+      method: POST
+      headers:
+        content-type: application/json
+      json:
+        username: "{new_audience.username:s}"
+        password: "{new_audience.password:s}"
+        role: "{new_audience.role:s}"
+    response:
+      status_code: 409
+

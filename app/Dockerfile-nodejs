@@ -1,0 +1,21 @@
+FROM node:14.7.0
+
+ARG project_dir=/app/
+ARG app_dir=src/js
+WORKDIR $project_dir
+
+RUN apt-get update
+RUN apt-get install -y mysql-client
+ADD $app_dir/package.json $project_dir
+RUN yarn install
+
+COPY common/init.sh $project_dir/scripts/init.sh
+COPY db/init.sql $project_dir/scripts/init.sql
+RUN chmod +x scripts/*
+
+COPY $app_dir/ $project_dir
+COPY public $project_dir/public
+
+CMD ["sh", "/app/endpoint.sh"]
+
+EXPOSE 5000

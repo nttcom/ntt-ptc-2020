@@ -1,0 +1,78 @@
+---
+test_name: Login Success Testcase
+stages:
+  - name: Login Success
+    request:
+      url: "{tavern.env_vars.url}/login"
+      method: POST
+      headers:
+        content-type: application/json
+      json:
+        username: user01
+        password: password
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+      json:
+        user_id: !anyint
+        access_token: !anystr
+      verify_response_with:
+        function: tavern.testutils.helpers:validate_jwt
+        extra_kwargs:
+          jwt_key: "access_token"
+          key: "{jwt_secret_key}"
+          algorithms: "HS256"
+
+---
+test_name: Login Fail return 400
+stages:
+  - name: No password return 400
+    request:
+      url: "{tavern.env_vars.url}/login"
+      method: POST
+      headers:
+        content-type: application/json
+      json:
+        username: user01
+    response:
+      status_code: 400
+
+  - name: No username return 400
+    request:
+      url: "{tavern.env_vars.url}/login"
+      method: POST
+      headers:
+        content-type: application/json
+      json:
+        password: password
+    response:
+      status_code: 400
+
+
+---
+test_name: Login Fail return 401
+stages:
+  - name: Wrong password return 401
+    request:
+      url: "{tavern.env_vars.url}/login"
+      method: POST
+      headers:
+        content-type: application/json
+      json:
+        username: user01
+        password: wrong_password
+    response:
+      status_code: 401
+
+  - name: No username return 401
+    request:
+      url: "{tavern.env_vars.url}/login"
+      method: POST
+      headers:
+        content-type: application/json
+      json:
+        username: user999
+        password: wrong_password
+    response:
+      status_code: 401

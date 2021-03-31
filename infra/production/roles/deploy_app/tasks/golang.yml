@@ -1,0 +1,21 @@
+---
+- name: 'copy go app from repo'
+  copy:
+    remote_src: true
+    src: '{{ tmp_dir }}/app/src/go'
+    dest: '{{ app_dir }}'
+    owner: '{{ player_name }}'
+    group: '{{ group_name }}'
+    mode: '0755'
+
+- name: 'install dependent libs'
+  command: '/usr/lib/go-1.14/bin/go mod download'
+  args:
+    chdir: '{{ app_dir }}/go'
+  become_user: '{{ player_name }}'
+
+- name: 'build go app'
+  command: '/usr/lib/go-1.14/bin/go build -o nplus app.go utils.go jwt.go'
+  args:
+    chdir: '{{ app_dir }}/go'
+  become_user: '{{ player_name }}'

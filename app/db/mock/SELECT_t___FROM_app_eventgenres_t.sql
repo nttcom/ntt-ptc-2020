@@ -1,0 +1,13 @@
+INSERT INTO app.eventgenres (id, name) VALUES (1, '記者会見');
+INSERT INTO app.eventgenres (id, name) VALUES (2, '報道発表');
+INSERT INTO app.eventgenres (id, name) VALUES (3, 'お祭り・フェス');
+INSERT INTO app.eventgenres (id, name) VALUES (4, 'コンサート');
+INSERT INTO app.eventgenres (id, name) VALUES (5, 'ワークショップ');
+INSERT INTO app.eventgenres (id, name) VALUES (6, '展示会');
+INSERT INTO app.eventgenres (id, name) VALUES (7, 'スポーツ');
+INSERT INTO app.eventgenres (id, name) VALUES (8, '演劇・ダンス');
+INSERT INTO app.eventgenres (id, name) VALUES (9, '物産展');
+INSERT INTO app.eventgenres (id, name) VALUES (10, '各種ショー');
+INSERT INTO app.eventgenres (id, name) VALUES (11, '即売会・バザー');
+INSERT INTO app.eventgenres (id, name) VALUES (12, 'eスポーツ');
+INSERT INTO app.eventgenres (id, name) VALUES (13, '講演');

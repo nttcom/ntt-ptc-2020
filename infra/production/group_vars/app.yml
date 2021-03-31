@@ -1,0 +1,16 @@
+---
+seed_file: seed.sql
+app_dir: '/home/{{ player_name }}/app'
+
+player_password: 6vJ4cfXE9ZdRLKiNUruM2ca5AF7Vs45BKR8o5xN6CaYkCoWzmq
+
+app:
+  name: nplus
+  revocated_token_list: '{{ app_dir }}/revocated_token.list'
+
+db:
+  host: localhost
+  name: app
+  username: ptc-user
+  password: resu-ctp
+  root_password: H8rZTapUeP8tomx6EMNfXSAedJjeRn3d

@@ -1,0 +1,121 @@
+inherit_mode:
+  merge:
+    - Include
+
+AllCops:
+  Include:
+    - Rakefile
+    - Gemfile
+    - config.ru
+  NewCops: enable
+  TargetRubyVersion: 2.7
+
+Metrics/AbcSize:
+  # The ABC size is a calculated magnitude, so this number can be an Integer or
+  # a Float.
+  Max: 150
+
+Metrics/BlockLength:
+  CountComments: false  # count full line comments?
+  Max: 600
+
+Metrics/PerceivedComplexity:
+  Max: 20
+
+Metrics/CyclomaticComplexity:
+  Max: 20
+
+# Limit lines to 80 characters.
+Layout/LineLength:
+  Enabled: false
+
+# Avoid methods longer than 10 lines of code
+Metrics/MethodLength:
+  Enabled: false
+
+Metrics/ModuleLength:
+  Enabled: false
+
+Metrics/ClassLength:
+  Enabled: false
+
+Style/GlobalVars:
+  AllowedVariables: [$db_params]
+
+# Favor modifier if/unless usage when you have a single-line body.
+Style/IfUnlessModifier:
+  Enabled: false
+
+# Favor modifier while/until usage when you have a single-line body.
+Style/WhileUntilModifier:
+  Enabled: false
+
+# Preferred collection methods.
+Style/CollectionMethods:
+  Enabled: false
+
+# Don't interpolate global, instance and class variables directly in strings.
+Style/VariableInterpolation:
+  Enabled: false
+
+# Use only ascii symbols in comments.
+Style/AsciiComments:
+  Enabled: false
+
+Style/CaseEquality:
+  Enabled: false
+
+Style/SignalException:
+  Enabled: false
+
+Style/SymbolArray:
+  Enabled: true
+
+Style/Documentation:
+  Enabled: false
+
+Style/TrivialAccessors:
+  Enabled: false
+
+Style/PerlBackrefs:
+  Enabled: false
+
+Style/SingleLineBlockParams:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/RegexpLiteral:
+  Enabled: false
+
+Naming/FileName:
+  Enabled: false
+
+Layout/ArrayAlignment:
+  Enabled: false
+
+Layout/HashAlignment:
+  Enabled: false
+
+# 一時的に封鎖
+Naming/AccessorMethodName:
+  Enabled: false
+
+Style/GuardClause:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+    Enabled: false
+
+Style/HashSyntax:
+    Enabled: false
+
+Style/SafeNavigation:
+    Enabled: false
+
+Style/NumericPredicate:
+    Enabled: false
+
+Security/Eval:
+  Enabled: false

@@ -1,0 +1,21 @@
+---
+- name: 'copy apitest dir to app dir'
+  copy:
+    remote_src: true
+    src: '{{ tmp_dir }}/app/apitest'
+    dest: '{{ app_dir }}'
+    owner: '{{ player_name }}'
+    group: '{{ group_name }}'
+    mode: '0755'
+
+- name: 'install dependencies'
+  command: 'python3.7 -m pip install -r {{ app_dir }}/apitest/requirements.txt'
+  become_user: '{{ player_name }}'
+
+- name: 'put execution script file'
+  template:
+    src: apitest.sh.j2
+    dest: '{{ app_dir }}/apitest/apitest.sh'
+    owner: '{{ player_name }}'
+    group: '{{ group_name }}'
+    mode: '0755'

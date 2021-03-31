@@ -1,0 +1,73 @@
+---
+- name: 'copy apitest dir to app dir'
+  copy:
+    remote_src: true
+    src: '{{ tmp_dir }}/app/apitest'
+    dest: '/home/{{ admin_name }}'
+    owner: '{{ admin_name }}'
+    group: '{{ group_name }}'
+    mode: '0755'
+
+- name: 'apitest script'
+  template:
+    src: endpoint.sh.j2
+    dest: '/home/{{ admin_name }}/apitest/endpoint.sh'
+    owner: '{{ admin_name }}'
+    group: '{{ group_name }}'
+    mode: 0755
+
+- name: 'install dependencies'
+  command: 'python3.7 -m pip install -r /home/{{ admin_name }}/apitest/requirements.txt'
+  become_user: '{{ admin_name }}'
+
+- name: 'copy bench dir to admin'
+  copy:
+    src: '{{ tmp_dir }}/bench'
+    dest: '/home/{{ admin_name }}'
+    owner: '{{ admin_name }}'
+    group: '{{ group_name }}'
+    mode: preserve
+    remote_src: true
+
+- name: 'copy revoked token list'
+  copy:
+    src: revoked_token.json
+    dest: '{{ bench_dir }}'
+    owner: '{{ admin_name }}'
+    group: '{{ group_name }}'
+
+- name: 'copy expired token list'
+  copy:
+    src: expired_token.json
+    dest: '{{ bench_dir }}'
+    owner: '{{ admin_name }}'
+    group: '{{ group_name }}'
+
+- name: 'copy test image data'
+  unarchive:
+    src: 'images.tgz'
+    dest: '{{ bench_dir }}'
+    owner: '{{ admin_name }}'
+    group: '{{ group_name }}'
+
+- name: 'put env file'
+  template:
+    src: .env.j2
+    dest: '{{ bench_dir }}/.env'
+    owner: '{{ admin_name }}'
+    group: '{{ group_name }}'
+
+- name: 'put systemd file'
+  template:
+    src: nplus_bench.service.j2
+    dest: '/etc/systemd/system/nplus_bench.service'
+
+- name: 'register to systemd'
+  systemd:
+    daemon_reload: true
+
+- name: 'start and enable bench'
+  systemd:
+    name: nplus_bench
+    enabled: true
+    state: started

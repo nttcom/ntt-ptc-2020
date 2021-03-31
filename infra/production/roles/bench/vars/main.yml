@@ -1,0 +1,5 @@
+---
+apitest_dir: '/home/{{ admin_name}}/apitest'
+bench_dir: '/home/{{ admin_name}}/bench'
+# VMにコピーするローカル環境のscenarioのディレクトリ
+local_scenario_dir: ../../bench/scenario

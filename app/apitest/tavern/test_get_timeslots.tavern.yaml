@@ -1,0 +1,136 @@
+---
+test_name: Get Timeslots Success Testcase
+
+includes:
+  - !include auth_stage.yaml
+
+stages:
+  - type: ref
+    id: login_get_token_of_artist
+
+  - name: Success to get timeslots when artist requests it with paging
+    request:
+      url: "{tavern.env_vars.url}/venues/1/timeslots?from=2020-04-01T12:00:00Z&to=2020-10-01T00:00:00Z"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+      json: !include "response/get_venues_1_timeslots.json"
+
+  - type: ref
+    id: login_get_token_of_owner
+  - name: Success to get timeslots when owner requests it with paging
+    request:
+      url: "{tavern.env_vars.url}/venues/1/timeslots?from=2020-04-01T12:00:00Z&to=2020-10-01T00:00:00Z"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+      json: !include "response/get_venues_1_timeslots.json"
+
+  - name: Success to get empty list when venue doesn't have empty timeslots
+    request:
+      url: "{tavern.env_vars.url}/venues/1/timeslots?from=2020-04-02T12:00:00Z&to=2020-04-03T00:00:00Z"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+      json: []
+
+
+---
+test_name: Get events return 400
+
+includes:
+  - !include auth_stage.yaml
+
+stages:
+  - type: ref
+    id: login_get_token_of_artist
+  - name: Return 400 when user_id is invalid
+    request:
+      url: "{tavern.env_vars.url}/venues/venue_id/timeslots"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 400
+
+  - name: Return 400 when paging is invalid type
+    request:
+      url: "{tavern.env_vars.url}/venues/1/timeslots?from=invalid&to=invalid"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 400
+      headers:
+        content-type: application/json
+      json:
+        message: !anystr
+
+---
+test_name: Get events return 401
+stages:
+  - name: Return 401 when No Login
+    request:
+      url: "{tavern.env_vars.url}/venues/1/timeslots"
+      method: GET
+    response:
+      status_code: 401
+
+
+---
+
+test_name: Get events return 403
+
+includes:
+  - !include auth_stage.yaml
+
+stages:
+  - type: ref
+    id: login_get_token
+  - name: Return 403 when audience requests timeslots
+    request:
+      url: "{tavern.env_vars.url}/venues/1/timeslots"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 403
+
+
+---
+
+test_name: Get events return 404
+
+includes:
+  - !include auth_stage.yaml
+
+stages:
+  - type: ref
+    id: login_get_token_of_artist
+  - name: Return 404 when venue is missing
+    request:
+      url: "{tavern.env_vars.url}/venues/0/timeslots"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 404

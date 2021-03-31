@@ -1,0 +1,32 @@
+---
+name: Event create stage
+description:
+  Reusable test stages for event
+
+stages:
+  - id: create_event
+    name: Success to create a event (2 timeslots)
+    request:
+      url: "{tavern.env_vars.url}/events"
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+      json:
+        event_name: "{create_event.event_name:s}"
+        event_genre_id: !int "{create_event.event_genre_id:d}"
+        timeslot_ids:
+          - !int "{create_event.timeslot_ids[0]:d}"
+          - !int "{create_event.timeslot_ids[1]:d}"
+        price: !int "{create_event.price:d}"
+        start_at: "{create_event.start_at:s}"
+        end_at: "{create_event.end_at:s}"
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          created_event_id: id
+          event_created_at: created_at
+

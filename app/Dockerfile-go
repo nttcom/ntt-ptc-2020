@@ -1,0 +1,27 @@
+# build
+FROM golang:1.14.6 as builder
+ARG project_dir=/app/
+ARG app_dir=src/go
+
+WORKDIR $project_dir
+ENV GO111MODULE="on"
+COPY $app_dir/go.mod $app_dir/go.sum ./
+RUN go mod download
+COPY $app_dir .
+RUN CGO_ENABLED=0 GOOS=linux go build -o app app.go utils.go jwt.go
+
+# run
+FROM debian:buster as runner
+
+RUN apt-get update && apt-get install -y default-mysql-client
+
+ARG project_dir=/app/
+ARG app_dir=src/go
+
+WORKDIR $project_dir
+COPY common/init.sh $project_dir/scripts/init.sh
+COPY db/init.sql $project_dir/scripts/init.sql
+COPY $app_dir/public $project_dir/public
+COPY --from=builder $project_dir/app .
+ENTRYPOINT ["./app"]
+EXPOSE 5000
